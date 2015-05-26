@@ -35,4 +35,5 @@ int UtilesTexto::esConsonante(string::iterator it_letra){
 	// Si hay una consonante seguida por una 'y', la 'y' se considera vocal:
 	if (*it_letra == 'y' && esConsonante(it_letra-1)) return false;
 	return true;	
+	
 }
