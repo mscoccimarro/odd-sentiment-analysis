@@ -28,3 +28,11 @@ void UtilesTexto::limpiarPuntuacion(string *texto){
 	}
 	delete puntuacion;
 }
+
+int UtilesTexto::esConsonante(string::iterator it_letra){
+
+	if (*it_letra == 'a' || *it_letra == 'e' || *it_letra == 'i' || *it_letra == 'o' || *it_letra == 'u') return false;
+	// Si hay una consonante seguida por una 'y', la 'y' se considera vocal:
+	if (*it_letra == 'y' && esConsonante(it_letra-1)) return false;
+	return true;	
+}
