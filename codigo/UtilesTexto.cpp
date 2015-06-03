@@ -22,19 +22,17 @@ void UtilesTexto::limpiarPuntuacion(string *texto){
 	for (it = signos_p.begin(); it != signos_p.end(); it++){
 		pos_encontrada = texto->find(*it);
 		while(pos_encontrada != std::string::npos){
-			texto->erase(pos_encontrada,1);
+			texto->replace(pos_encontrada,1," ");
 			pos_encontrada = texto->find(*it);
 		}
 	}
 	delete puntuacion;
 }
 
-// Importante chequear que el iterador que se le proporciona al metodo no sea string.end()
 int UtilesTexto::esConsonante(string::iterator it_letra){
 
 	if (*it_letra == 'a' || *it_letra == 'e' || *it_letra == 'i' || *it_letra == 'o' || *it_letra == 'u') return false;
 	// Si hay una consonante seguida por una 'y', la 'y' se considera vocal:
 	if (*it_letra == 'y' && esConsonante(it_letra-1)) return false;
 	return true;	
-	
 }

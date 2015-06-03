@@ -11,14 +11,14 @@ Puntuacion::Puntuacion(){
 	this->signosPuntuacion.push_back('!');
 	this->signosPuntuacion.push_back('(');
 	this->signosPuntuacion.push_back(')');
+	this->signosPuntuacion.push_back('{');
+	this->signosPuntuacion.push_back('}');
 	this->signosPuntuacion.push_back('\\');
 	this->signosPuntuacion.push_back('-');
-	this->signosPuntuacion.push_back('_');
 	this->signosPuntuacion.push_back(':');
 	this->signosPuntuacion.push_back(';');
 	this->signosPuntuacion.push_back('*');
 	this->signosPuntuacion.push_back('/');
-	this->signosPuntuacion.push_back('\'');
 	this->signosPuntuacion.push_back('#');
 	this->signosPuntuacion.push_back('$');
 	this->signosPuntuacion.push_back('%');

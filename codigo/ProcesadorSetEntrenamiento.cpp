@@ -48,26 +48,34 @@ void ProcesadorSetEntrenamiento::obtenerReview (string linea, string *id_review,
  
 SetEntrenamiento* ProcesadorSetEntrenamiento::procesarSetEntrenamiento(){
 	
-	int resultado;
+	int resultado,cant_reviews_procesados = 0,cantidad_anterior = 0;
 	string linea, id_review, sentimiento_review;
 	vector <string> contenido_review;
 	SetEntrenamiento *setEntrenamiento = new SetEntrenamiento();
 	ifstream trainData ("labeledTrainData.tsv");
-			
+	
+	cout << "Procesando set de entrenamiento...\n";		
 	if (trainData.is_open()){
 			
 		getline(trainData,linea); // Ignoro la linea de titulos
 		while (getline(trainData,linea)){
+			if (cant_reviews_procesados == cantidad_anterior + 4000) {
+				cout<< cant_reviews_procesados << " reviews procesados hasta el momento.\n";
+				cantidad_anterior = cant_reviews_procesados;
+			}
+			
 			obtenerReview(linea,&id_review,&sentimiento_review,&contenido_review,&resultado);
-			if (resultado==OK) 
-				setEntrenamiento->agregarReview(id_review,sentimiento_review,contenido_review);
+			
+			if (resultado==OK) setEntrenamiento->agregarReview(id_review,sentimiento_review,contenido_review);
 			else {
 				error_stopWords();
 				setEntrenamiento->vaciar();
 				return setEntrenamiento;
 			}
+			cant_reviews_procesados ++;			
 		}
 		trainData.close(); 
+		cout << "Set de entrenamiento procesado.\n";
 	}
 	else error_setEntrenamiento();
 	return setEntrenamiento;

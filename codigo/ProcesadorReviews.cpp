@@ -1,5 +1,6 @@
 #include "ProcesadorReviews.h"
 #include "UtilesTexto.h"
+#include "EliminadorSufijos.h"
 #include "ProcesadorStopWords.h"
 #include "Tags.h"
 #define ERROR -1
@@ -7,49 +8,55 @@
 
 using namespace std;
 
+void ProcesadorReviews::eliminar_comillas_simples(string *texto){
+	size_t pos_encontrada;
+	string comilla_simple = "\'";
+	vector<string>::iterator it;
+	pos_encontrada = texto->find(comilla_simple);
+	while(pos_encontrada != std::string::npos){
+		texto->erase(pos_encontrada,1);
+		pos_encontrada = texto->find(comilla_simple);
+	}
+} 
+
 void ProcesadorReviews::limpiarTags (string *texto){
-	
 	size_t pos_encontrada;
 	Tags *tags = new Tags();
 	vector<string>::iterator tags_it;
 	vector<string> listaTags = tags->getTags();
 	
 	for (tags_it = listaTags.begin(); tags_it != listaTags.end(); tags_it++){
-	
 		pos_encontrada = texto->find(*tags_it);
-	
 		while(pos_encontrada != std::string::npos){
-			texto->erase(pos_encontrada,(*tags_it).length());
+			texto->replace(pos_encontrada,(*tags_it).length()," ");
 			pos_encontrada = texto->find(*tags_it);
 		}
 	} 
 	delete tags;
 }
 
-/* Devuelve en un vector las palabras del texto recibido en minuscula, sin signos de puntuacion, tags ni stop words. */
+/* Devuelve en un vector las palabras del texto recibido en minuscula, sin signos de puntuacion, sufijos, tags ni stop words. */
 vector<string> ProcesadorReviews::obtenerPalabras(string texto,int *resultado){
-	
 	vector<string> palabras;
+	vector<string>::iterator it_palabra;
 	string delimitador = " ", palabra;
-	size_t inicio_texto = 0;
-	
 	UtilesTexto *util = new UtilesTexto();
 	ProcesadorStopWords* stopWords = new ProcesadorStopWords();
-		
+	EliminadorSufijos *eSuf = new EliminadorSufijos();
 	limpiarTags(&texto);
+	eliminar_comillas_simples(&texto);
 	util->limpiarPuntuacion(&texto);
 	util->aMinuscula(&texto);
-	
-	
 	while (texto.size() > 0){
-		
-		palabra = texto.substr(inicio_texto,texto.find(delimitador));
+		// Borro espacios extra que haya dejado la eliminacion de tags o puntuacion
+		while(*texto.begin() == ' ') texto.erase(texto.begin());
+		palabra = texto.substr(0,texto.find(delimitador));
 		palabras.push_back(palabra);
-		texto.erase(inicio_texto, palabra.size() + delimitador.size());
+		texto.erase(0, palabra.size() + delimitador.size());
 	}
-	
 	*resultado = stopWords->eliminarStopWords(&palabras);
-	
+	for (it_palabra = palabras.begin(); it_palabra != palabras.end() ; it_palabra++) eSuf->eliminarSufijos(&(*it_palabra));
+	delete eSuf;
 	delete util;
 	delete stopWords;
 	return palabras;

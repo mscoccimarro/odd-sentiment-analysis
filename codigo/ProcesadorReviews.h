@@ -9,7 +9,8 @@ class ProcesadorReviews {
 		std::vector <std::string> obtenerPalabras(std::string texto, int *resultado);
 
     private:
-		void limpiarTags (std::string *texto);
+		void limpiarTags(std::string *texto);
+		void eliminar_comillas_simples(std::string *texto);
     
 };
 
