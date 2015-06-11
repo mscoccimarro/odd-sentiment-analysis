@@ -1,9 +1,42 @@
 #include "UtilesTexto.h"
-#include "Puntuacion.h"
 #include <string>
 #include <vector>
 
 using namespace std;
+
+vector<char> UtilesTexto::getPuntuacion(){
+	vector<char> signosPuntuacion;
+	signosPuntuacion.push_back('"');
+	signosPuntuacion.push_back('.');
+	signosPuntuacion.push_back(',');
+	signosPuntuacion.push_back('?');
+	signosPuntuacion.push_back('!');
+	signosPuntuacion.push_back('(');
+	signosPuntuacion.push_back(')');
+	signosPuntuacion.push_back('{');
+	signosPuntuacion.push_back('}');
+	signosPuntuacion.push_back('\\');
+	signosPuntuacion.push_back('-');
+	signosPuntuacion.push_back(':');
+	signosPuntuacion.push_back(';');
+	signosPuntuacion.push_back('*');
+	signosPuntuacion.push_back('/');
+	signosPuntuacion.push_back('#');
+	signosPuntuacion.push_back('$');
+	signosPuntuacion.push_back('%');
+	signosPuntuacion.push_back('=');
+	signosPuntuacion.push_back('*');
+	signosPuntuacion.push_back('`');
+	return signosPuntuacion;
+}
+
+vector<string> UtilesTexto::getTags(){
+	vector<string> listaTags;
+	listaTags.push_back("<br />");
+	listaTags.push_back("\"");
+	listaTags.push_back("¨");
+	return listaTags;
+}
 
 void UtilesTexto::aMinuscula (string *texto){
 
@@ -15,8 +48,7 @@ void UtilesTexto::aMinuscula (string *texto){
 void UtilesTexto::limpiarPuntuacion(string *texto){
 
 	size_t pos_encontrada;
-	Puntuacion *puntuacion = new Puntuacion();
-	vector<char> signos_p= puntuacion->getPuntuacion();
+	vector<char> signos_p= getPuntuacion();
 	vector<char>::iterator it;
 	
 	for (it = signos_p.begin(); it != signos_p.end(); it++){
@@ -26,7 +58,6 @@ void UtilesTexto::limpiarPuntuacion(string *texto){
 			pos_encontrada = texto->find(*it);
 		}
 	}
-	delete puntuacion;
 }
 // Importante chequear que el iterador que se le proporciona al metodo no sea string.end()
 int UtilesTexto::esConsonante(string::iterator it_letra){
