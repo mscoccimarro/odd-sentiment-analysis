@@ -28,7 +28,7 @@ void UtilesTexto::limpiarPuntuacion(string *texto){
 	}
 	delete puntuacion;
 }
-
+// Importante chequear que el iterador que se le proporciona al metodo no sea string.end()
 int UtilesTexto::esConsonante(string::iterator it_letra){
 
 	if (*it_letra == 'a' || *it_letra == 'e' || *it_letra == 'i' || *it_letra == 'o' || *it_letra == 'u') return false;

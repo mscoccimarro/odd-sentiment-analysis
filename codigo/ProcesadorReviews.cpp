@@ -3,11 +3,16 @@
 #include "EliminadorSufijos.h"
 #include "ProcesadorStopWords.h"
 #include "Tags.h"
+#include <iostream>
+#define STRING_VACIO " "
+#define CARAC_BLANCO ' '
 #define ERROR -1
 #define OK 0
 
 using namespace std;
 
+/* Se eliminan las comillas simples para que por ejemplo: he's pase a ser hes o i've pase a ser ive y 
+ * sean interpretados como parte de la misma palabra. */
 void ProcesadorReviews::eliminar_comillas_simples(string *texto){
 	size_t pos_encontrada;
 	string comilla_simple = "\'";
@@ -28,7 +33,7 @@ void ProcesadorReviews::limpiarTags (string *texto){
 	for (tags_it = listaTags.begin(); tags_it != listaTags.end(); tags_it++){
 		pos_encontrada = texto->find(*tags_it);
 		while(pos_encontrada != std::string::npos){
-			texto->replace(pos_encontrada,(*tags_it).length()," ");
+			texto->replace(pos_encontrada,(*tags_it).length(),STRING_VACIO);
 			pos_encontrada = texto->find(*tags_it);
 		}
 	} 
@@ -39,20 +44,23 @@ void ProcesadorReviews::limpiarTags (string *texto){
 vector<string> ProcesadorReviews::obtenerPalabras(string texto,int *resultado){
 	vector<string> palabras;
 	vector<string>::iterator it_palabra;
-	string delimitador = " ", palabra;
+	string delimitador = STRING_VACIO, palabra;
+	
 	UtilesTexto *util = new UtilesTexto();
 	ProcesadorStopWords* stopWords = new ProcesadorStopWords();
 	EliminadorSufijos *eSuf = new EliminadorSufijos();
+	
 	limpiarTags(&texto);
 	eliminar_comillas_simples(&texto);
 	util->limpiarPuntuacion(&texto);
 	util->aMinuscula(&texto);
+	// Borro espacios extra que haya dejado la eliminacion de tags o puntuacion
+	while(*texto.begin() == CARAC_BLANCO) texto.erase(texto.begin());	
 	while (texto.size() > 0){
-		// Borro espacios extra que haya dejado la eliminacion de tags o puntuacion
-		while(*texto.begin() == ' ') texto.erase(texto.begin());
 		palabra = texto.substr(0,texto.find(delimitador));
 		palabras.push_back(palabra);
 		texto.erase(0, palabra.size() + delimitador.size());
+		while(*texto.begin() == CARAC_BLANCO) texto.erase(texto.begin());	
 	}
 	*resultado = stopWords->eliminarStopWords(&palabras);
 	for (it_palabra = palabras.begin(); it_palabra != palabras.end() ; it_palabra++) eSuf->eliminarSufijos(&(*it_palabra));
