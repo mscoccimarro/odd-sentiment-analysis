@@ -1,9 +1,6 @@
 #include "EliminadorSufijos.h"
 #include "ProcesadorSufijos.h"
 #include "UtilesTexto.h"
-//BORRAR
-#include <iostream>
-//
 #define STRING_VACIO ""
 using namespace std;
 
