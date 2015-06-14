@@ -17,7 +17,7 @@ void ProcesadorReviews::eliminar_comillas_simples(string *texto){
 	string comilla_simple = "\'";
 	vector<string>::iterator it;
 	pos_encontrada = texto->find(comilla_simple);
-	while(pos_encontrada != std::string::npos){
+	while(pos_encontrada != string::npos){
 		texto->erase(pos_encontrada,1);
 		pos_encontrada = texto->find(comilla_simple);
 	}
@@ -31,17 +31,30 @@ void ProcesadorReviews::limpiarTags (string *texto){
 	
 	for (tags_it = listaTags.begin(); tags_it != listaTags.end(); tags_it++){
 		pos_encontrada = texto->find(*tags_it);
-		while(pos_encontrada != std::string::npos){
+		while(pos_encontrada != string::npos){
 			texto->replace(pos_encontrada,(*tags_it).length(),STRING_VACIO);
 			pos_encontrada = texto->find(*tags_it);
 		}
 	} 
 	delete util;
 }
-
+/* Devuelve en un vector los signos de exclamacion que posee la palabra, ademas de eliminarlos de la misma.
+ * Si la palabra no tenia ningun signo de exclamacion, devuelve un vector vacio.
+ */
+vector<string> ProcesadorReviews::procesarExclamaciones(string *palabra){
+		vector<string> exclamaciones;
+		string signo_exclamacion = "!";
+		size_t found = palabra->find(signo_exclamacion);
+		while(found != string::npos){
+			exclamaciones.push_back(signo_exclamacion);
+			palabra->erase(found,signo_exclamacion.length());
+			found = palabra->find(signo_exclamacion);		
+		}
+		return exclamaciones;
+}			
 /* Devuelve en un vector las palabras del texto recibido en minuscula, sin signos de puntuacion, sufijos, tags ni stop words. */
 vector<string> ProcesadorReviews::obtenerPalabras(string texto,int *resultado){
-	vector<string> palabras;
+	vector<string> palabras,exclamaciones;
 	vector<string>::iterator it_palabra;
 	string delimitador = STRING_VACIO, palabra;
 	
@@ -57,8 +70,15 @@ vector<string> ProcesadorReviews::obtenerPalabras(string texto,int *resultado){
 	while(*texto.begin() == CARAC_BLANCO) texto.erase(texto.begin());	
 	while (texto.size() > 0){
 		palabra = texto.substr(0,texto.find(delimitador));
-		palabras.push_back(palabra);
 		texto.erase(0, palabra.size() + delimitador.size());
+		exclamaciones = procesarExclamaciones(&palabra); 
+		palabras.push_back(palabra);
+		if(!exclamaciones.empty()){
+			// Si se encontraron signos de exclamacion, se los agrega como palabras al contenido del review
+			vector<string>::iterator exclamacion;
+			for (exclamacion = exclamaciones.begin(); exclamacion != exclamaciones.end(); exclamacion++)
+				palabras.push_back(*exclamacion);
+		}
 		while(*texto.begin() == CARAC_BLANCO) texto.erase(texto.begin());	
 	}
 	*resultado = stopWords->eliminarStopWords(&palabras);
