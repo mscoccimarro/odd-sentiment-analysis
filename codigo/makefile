@@ -1,4 +1,4 @@
-OBJS = obtenerSetEntrenamiento.o SetEntrenamiento.o ProcesadorSetEntrenamiento.o UtilesTexto.o ProcesadorReviews.o \
+OBJS = prueba.o SetEntrenamiento.o ProcesadorSetEntrenamiento.o UtilesTexto.o ProcesadorReviews.o Arbol.o RandomForest.o \
 EliminadorSufijos.o ProcesadorSufijos.o ProcesadorStopWords.o
 CC = g++
 OFLAGS = -o
@@ -7,8 +7,8 @@ CFLAGS = -c
 test.exe : $(OBJS)
 	$(CC) $(OBJS) $(OFLAGS) test
 
-obtenerSetEntrenamiento.o : obtenerSetEntrenamiento.cpp ProcesadorSetEntrenamiento.h SetEntrenamiento.h
-	$(CC) $(CFLAGS) obtenerSetEntrenamiento.cpp
+prueba.o : prueba.cpp SetEntrenamiento.h ProcesadorSetEntrenamiento.h RandomForest.h 
+	$(CC) $(CFLAGS) prueba.cpp
 
 ProcesadorSetEntrenamiento.o : ProcesadorSetEntrenamiento.h ProcesadorSetEntrenamiento.cpp ProcesadorReviews.h SetEntrenamiento.h UtilesTexto.h
 	$(CC) $(CFLAGS) ProcesadorSetEntrenamiento.cpp
@@ -30,6 +30,12 @@ ProcesadorSufijos.o : ProcesadorSufijos.h ProcesadorSufijos.cpp UtilesTexto.h
 
 ProcesadorStopWords.o : ProcesadorStopWords.h ProcesadorStopWords.cpp
 	$(CC) $(CFLAGS) ProcesadorStopWords.cpp
+
+Arbol.o : Arbol.h Arbol.cpp
+	$(CC) $(CFLAGS) Arbol.cpp
+
+RandomForest.o : RandomForest.h RandomForest.cpp Arbol.h
+	$(CC) $(CFLAGS) RandomForest.cpp
 
 clean:
 	\rm *.o *~ test
