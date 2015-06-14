@@ -21,7 +21,6 @@ class ProcesadorSufijos {
 				
 	private:
 		UtilesTexto *util;
-		bool termina_con(std::string palabra,std::string sufijo); 
 		bool es_endingLiValido(char caracter);
 		bool s_cumple_condicion(std::string palabra);
 		bool palabra_cumple_condicion(std::string palabra,int tamanio);

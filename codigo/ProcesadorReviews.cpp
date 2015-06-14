@@ -2,7 +2,6 @@
 #include "UtilesTexto.h"
 #include "EliminadorSufijos.h"
 #include "ProcesadorStopWords.h"
-#include "Tags.h"
 #include <iostream>
 #define STRING_VACIO " "
 #define CARAC_BLANCO ' '
@@ -26,9 +25,9 @@ void ProcesadorReviews::eliminar_comillas_simples(string *texto){
 
 void ProcesadorReviews::limpiarTags (string *texto){
 	size_t pos_encontrada;
-	Tags *tags = new Tags();
+	UtilesTexto *util = new UtilesTexto();
 	vector<string>::iterator tags_it;
-	vector<string> listaTags = tags->getTags();
+	vector<string> listaTags = util->getTags();
 	
 	for (tags_it = listaTags.begin(); tags_it != listaTags.end(); tags_it++){
 		pos_encontrada = texto->find(*tags_it);
@@ -37,7 +36,7 @@ void ProcesadorReviews::limpiarTags (string *texto){
 			pos_encontrada = texto->find(*tags_it);
 		}
 	} 
-	delete tags;
+	delete util;
 }
 
 /* Devuelve en un vector las palabras del texto recibido en minuscula, sin signos de puntuacion, sufijos, tags ni stop words. */

@@ -13,7 +13,8 @@ class EliminadorSufijos {
 		ProcesadorSufijos *procesador;
 		UtilesTexto *util;
 		//Steps del proceso:
-		void step1a(std::string *palabra);
+		bool excepciones(std::string *palabra);
+		bool step1a(std::string *palabra);
 		void step1b(std::string *palabra);
 		void step1c(std::string *palabra);
 		void step2(std::string *palabra);
@@ -25,9 +26,10 @@ class EliminadorSufijos {
 		std::string definirR1(std::string palabra);
 		std::string definirR2(std::string palabra);
 		std::string procesarRegionRi(std::string palabra);
-		int esDoble(std::string palabra);
-		int esShort(std::string palabra);
-		int silaba_es_short(std::string palabra);
+		bool postStep1a(std::string palabra);
+		bool esDoble(std::string palabra);
+		bool esShort(std::string palabra);
+		bool silaba_es_short(std::string palabra);
 		void cambiarYconsonante(std::string *palabra);
 		void postStep1b(std::string *palabra);
 		void quitarYconsonante(std::string *palabra);				

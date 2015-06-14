@@ -6,8 +6,11 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include <ctime>
 #define OK 0
 #define ERROR -1
+#define CANT_REVIEWS_PROCESADOS 5000
+#define TOTAL_REVIEWS 25000
 
 using namespace std;
 
@@ -47,7 +50,6 @@ void ProcesadorSetEntrenamiento::obtenerReview (string linea, string *id_review,
  * */
  
 SetEntrenamiento* ProcesadorSetEntrenamiento::procesarSetEntrenamiento(){
-	
 	int resultado,cant_reviews_procesados = 0,cantidad_anterior = 0;
 	string linea, id_review, sentimiento_review;
 	vector <string> contenido_review;
@@ -59,8 +61,9 @@ SetEntrenamiento* ProcesadorSetEntrenamiento::procesarSetEntrenamiento(){
 			
 		getline(trainData,linea); // Ignoro la linea de titulos
 		while (getline(trainData,linea)){
-			if (cant_reviews_procesados == cantidad_anterior + 4000) {
-				cout<< cant_reviews_procesados << " reviews procesados hasta el momento.\n";
+			
+			if (cant_reviews_procesados == cantidad_anterior + CANT_REVIEWS_PROCESADOS) {
+				cout<< cant_reviews_procesados << " de " << TOTAL_REVIEWS << " reviews procesados hasta el momento.\n";
 				cantidad_anterior = cant_reviews_procesados;
 			}
 			
