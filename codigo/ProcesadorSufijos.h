@@ -6,23 +6,24 @@ class ProcesadorSufijos {
 	public:
 		ProcesadorSufijos();
 		~ProcesadorSufijos();
-		int procesar_ingly_edly_ing_ed(std::string *palabra,std::string sufijo);
-		int procesar_sses(std::string *palabra);
-		void eliminar_sufijo_de_ri(std::string *palabra,std::string r1,std::string sufijo);
-		void procesar_ative(std::string *palabra,std::string r1,std::string r2);
-		void procesar_eedly_eed(std::string *palabra,std::string r1,std::string sufijo);
-		void procesar_ied_ies(std::string *palabra,std::string sufijo);
-		void procesar_ion(std::string *palabra,std::string r2);	
-		void procesar_s(std::string *palabra);
-		void procesar_ogi(std::string *palabra,std::string r1);
-		void procesar_li(std::string *palabra,std::string r1);
-		void procesar_y_borrar(std::string *palabra,std::string r1,std::string sufijo,std::string reemplazo);
-		void procesar_y_reemplazar(std::string *palabra,std::string r1,std::string sufijo,std::string reemplazo);
+		bool procesar_ingly_edly_ing_ed(std::string *palabra,std::string sufijo);
+		bool procesar_sses(std::string *palabra);
+		bool eliminar_sufijo_de_ri(std::string *palabra,std::string r1,std::string sufijo);
+		bool procesar_ative(std::string *palabra,std::string r2);
+		bool procesar_eedly_eed(std::string *palabra,std::string r1,std::string sufijo);
+		bool procesar_ied_ies(std::string *palabra,std::string sufijo);
+		bool procesar_ion(std::string *palabra,std::string r2);	
+		bool procesar_s(std::string *palabra);
+		bool procesar_ogi(std::string *palabra,std::string r1);
+		bool procesar_li(std::string *palabra,std::string r1);
+		bool procesar_y_borrar(std::string *palabra,std::string r1,std::string sufijo,std::string reemplazo);
+		bool procesar_y_reemplazar(std::string *palabra,std::string r1,std::string sufijo,std::string reemplazo);
 				
 	private:
 		UtilesTexto *util;
-		int es_endingLiValido(char caracter);
-		int s_cumple_condicion(std::string palabra);
-		int palabra_cumple_condicion(std::string palabra,int tamanio);
+		bool termina_con(std::string palabra,std::string sufijo); 
+		bool es_endingLiValido(char caracter);
+		bool s_cumple_condicion(std::string palabra);
+		bool palabra_cumple_condicion(std::string palabra,int tamanio);
 };
 #endif

@@ -107,6 +107,9 @@ int EliminadorSufijos::esShort(string palabra){
 * (por ejemplo 'gas' conservara su 's' mientras que 'gaps' y 'kiwis' no la conservaran) y no tiene dos 'ss' al final (por ejemplo
 * 'caress' conservara su s)
 */
+
+
+
 void EliminadorSufijos::step1a(string *palabra){
 	this->procesador->procesar_ied_ies(palabra,"ied");
 	this->procesador->procesar_ied_ies(palabra,"ies"); 
@@ -219,7 +222,7 @@ void EliminadorSufijos::step3(string *palabra){
 	this->procesador->procesar_y_borrar(palabra,r1,"tional","tion");
 	this->procesador->procesar_y_borrar(palabra,r1,"alize","al");
 	this->procesador->procesar_y_borrar(palabra,r1,"icate","ic");
-	this->procesador->procesar_ative(palabra,r1,r2);
+	this->procesador->procesar_ative(palabra,r2);
 	this->procesador->eliminar_sufijo_de_ri(palabra,r1,"ful");
 	this->procesador->eliminar_sufijo_de_ri(palabra,r1,"ness");
 }
@@ -268,14 +271,15 @@ void EliminadorSufijos::step5(string *palabra){
 	if (*it == 'l' && *(it-1) == 'l' && *it_r2 == 'l') palabra->erase(it);  
 }
 
-/* Remueve los sufijos de las palabras dejando solo su 'stem' (parte de la palabra que nunca cambia)
+/* Porter-Stemmer
+ * Remueve los sufijos de las palabras dejando solo su 'stem' (parte de la palabra que nunca cambia)
  * Por ejemplo, dada la palabra 'produced' su stem es 'produc', ya que hay palabras como
  * 'production', 'productively', 'producing', etc.
  */
 void EliminadorSufijos::eliminarSufijos(string *palabra){
 	cambiarYconsonante(palabra);
 // Si la palabra tiene longitud menor o igual a 2, no se le aplica ningun cambio. 
-// Esto se chequea en cada paso, ya que al irse procesando la palabra esta se va acortando.
+// Esto se chequea en cada paso ya que al irse procesando la palabra, esta se va acortando.
 	if (palabra->length() > 2) step1a(palabra);
 	if (palabra->length() > 2) step1b(palabra);
 	if (palabra->length() > 2) step1c(palabra);		
