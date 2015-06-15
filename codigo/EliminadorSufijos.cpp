@@ -12,7 +12,7 @@ EliminadorSufijos::EliminadorSufijos(){
 EliminadorSufijos::~EliminadorSufijos(){
 	delete this->procesador;
 	delete this->util;
-};
+}
 
 string EliminadorSufijos::copiar(string::iterator it,string::iterator finPalabra){
 	string ri;
@@ -307,7 +307,7 @@ void EliminadorSufijos::step4(string *palabra){
 void EliminadorSufijos::step5(string *palabra){
 	string r1 = definirR1(*palabra),r2 = definirR2(r1),silaba_anterior = palabra->substr(0,palabra->length()-1);
 	string::iterator it = palabra->end()-1, it_r1 = r1.end()-1, it_r2 = r2.end()-1;
-	if (*it == 'e' && (*it_r2 == 'e' || *it_r1  == 'e' && !silaba_es_short(silaba_anterior))) palabra->erase(it);
+	if (*it == 'e' && (*it_r2 == 'e' || (*it_r1  == 'e' && !silaba_es_short(silaba_anterior)))) palabra->erase(it);
 	if (*it == 'l' && *(it-1) == 'l' && *it_r2 == 'l') palabra->erase(it);  
 }
 
