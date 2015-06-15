@@ -3,6 +3,34 @@
 
 using namespace std;
 
+
+/**
+ * Inserta un vector a un puntero
+ */
+vector <string>* vectorAPuntero(string vectorPorValor[], unsigned int cantidad){
+	vector<string>* puntero = new vector<string>;
+	for (unsigned int j = 0; j < cantidad; j++) {
+		puntero->push_back(vectorPorValor[j]);
+	}
+	return puntero;
+}
+
+/**
+ * Inserta una matriz a un puntero
+ */
+vector< vector<string>* >* matrizAPuntero(string** matrizPorValor, unsigned int filas, unsigned int cols){
+
+	vector< vector<string>* >* puntero = new vector < vector<string>* >;
+	for (unsigned int i = 0; i < filas; i++) {
+		vector<string>* fila;
+		for (unsigned int j = 0; j < cols; j++) {
+			fila->push_back(matrizPorValor[i][j]);
+		}
+		puntero->push_back(fila);
+	}
+	return puntero;
+}
+
 /**
  * Inserta los datos del ejercicio de apunte de datos.
  */
@@ -23,19 +51,16 @@ void armarRandomForestEjercicioDeDatos1(RandomForest* randomForest){
 	{"8", "regular", "universitarios", "media", "si"}
 	};
 
-	vector<string> vectorCaracteristicas;
-	for (unsigned int j = 0; j < cols; j++) {
-		vectorCaracteristicas.push_back(caracteristicas[j]);
+	vector<string>* vectorCaracteristicas = vectorAPuntero(caracteristicas, cols);
+	vector< vector<string>* >* matrizConVector = new vector < vector<string>* >;
+	for (unsigned int i = 0; i < filas; i++) {
+		vector<string>* fila = new vector <string>;
+		for (unsigned int j = 0; j < cols; j++) {
+			fila->push_back(matriz[i][j]);
+		}
+		matrizConVector->push_back(fila);
 	}
 
-	vector< vector<string> > matrizConVector;
-	for (unsigned int i = 0; i < filas; i++) {
-		vector<string> fila;
-		for (unsigned int j = 0; j < cols; j++) {
-			fila.push_back(matriz[i][j]);
-		}
-		matrizConVector.push_back(fila);
-	}
 	string valorPositivo = "si";
 
 	randomForest->insertarSetDeDatos(vectorCaracteristicas, matrizConVector, valorPositivo);
@@ -56,18 +81,14 @@ void armarRandomForestEjercicioDeDatos2(RandomForest* randomForest){
 	{"3", "buena",   "universitarios", "alta",  "si"},
 	};
 
-	vector<string> vectorCaracteristicas;
-	for (unsigned int j = 0; j < cols; j++) {
-		vectorCaracteristicas.push_back(caracteristicas[j]);
-	}
-
-	vector< vector<string> > matrizConVector;
+	vector<string>* vectorCaracteristicas = vectorAPuntero(caracteristicas, cols);
+	vector< vector<string>* >* matrizConVector = new vector < vector<string>* >;
 	for (unsigned int i = 0; i < filas; i++) {
-		vector<string> fila;
+		vector<string>* fila = new vector <string>;
 		for (unsigned int j = 0; j < cols; j++) {
-			fila.push_back(matriz[i][j]);
+			fila->push_back(matriz[i][j]);
 		}
-		matrizConVector.push_back(fila);
+		matrizConVector->push_back(fila);
 	}
 	string valorPositivo = "si";
 
@@ -100,18 +121,14 @@ void armarRandomForestEjercicioDeYouTube(RandomForest* randomForest){
 	{"D14", "Rain",     "High",   "Strong", "No" }
 	};
 
-	vector<string> vectorCaracteristicas;
-	for (unsigned int j = 0; j < cols; j++) {
-		vectorCaracteristicas.push_back(caracteristicas[j]);
-	}
-
-	vector< vector<string> > matrizConVector;
+	vector<string>* vectorCaracteristicas = vectorAPuntero(caracteristicas, cols);
+	vector< vector<string>* >* matrizConVector = new vector < vector<string>* >;
 	for (unsigned int i = 0; i < filas; i++) {
-		vector<string> fila;
+		vector<string>* fila = new vector <string>;
 		for (unsigned int j = 0; j < cols; j++) {
-			fila.push_back(matriz[i][j]);
+			fila->push_back(matriz[i][j]);
 		}
-		matrizConVector.push_back(fila);
+		matrizConVector->push_back(fila);
 	}
 
 	string valorPositivo = "Yes";
@@ -217,8 +234,8 @@ void testTomarDecisionRandomForestEjercicioDeYouTube(bool ejecutar){
 
 int main() {
 
-	testRandomForestEjercicioDeDatos(false);
-	testRandomForestEjercicioYouTube(false);
+	testRandomForestEjercicioDeDatos(true);
+	testRandomForestEjercicioYouTube(true);
 	testTomarDecisionRandomForestEjercicioDeDatos(true);
 	testTomarDecisionRandomForestEjercicioDeYouTube(true);
 	return 0;

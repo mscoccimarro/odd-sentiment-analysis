@@ -44,12 +44,25 @@ bool inVector (vector<string>* vector, string valor){
  */
 RandomForest::RandomForest() {
 	this->arboles = new vector<Arbol*>;
+	this->caracteristicas = NULL;
+	this->setDeDatos = NULL;
 }
 
 /**
  * Destructor
  */
 RandomForest::~RandomForest(){
+
+	if (this->caracteristicas != NULL){
+		delete this->caracteristicas;
+	}
+
+	if (this->setDeDatos != NULL){
+		for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
+			delete this->setDeDatos->at(i);
+		}
+		delete this->setDeDatos;
+	}
 
 	for (unsigned int i = 0; this->arboles != NULL && i < this->arboles->size(); i++){
 		delete this->arboles->at(i);
@@ -61,7 +74,19 @@ RandomForest::~RandomForest(){
  * Almacena las caracteristicas, todos los valores de las caracteristicas
  * y el valor que hace positivo a cada una de las caracteristicas.
  */
-void RandomForest::insertarSetDeDatos(vector<string> caracteristicas, vector< vector<string> > matriz, string valorPositivo){
+void RandomForest::insertarSetDeDatos(vector<string>* caracteristicas, vector< vector<string>* >* matriz, string valorPositivo){
+
+	if (this->caracteristicas != NULL){
+		delete this->caracteristicas;
+	}
+
+	if (this->setDeDatos != NULL){
+		for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
+			delete this->setDeDatos->at(i);
+		}
+		delete this->setDeDatos;
+	}
+
 	this->caracteristicas = caracteristicas;
 	this->setDeDatos = matriz;
 	this->valorPositivo = valorPositivo;
@@ -95,7 +120,7 @@ double RandomForest::getGanancia (vector<int>* indiceDeCaracteristicas, int colu
 	for (unsigned int i = 0; i < indiceDeCaracteristicas->size(); i++){
 
 		int posicionFila = indiceDeCaracteristicas->at(i);
-		string valor = this->setDeDatos[posicionFila][columnaCaracteristica];
+		string valor = this->setDeDatos->at(posicionFila)->at(columnaCaracteristica);
 		if (!inVector(valoresDistintos,valor)){
 			valoresDistintos->push_back(valor);
 		}
@@ -143,7 +168,7 @@ void RandomForest::armarArbolDeDecision(){
 
 	string claveArbol = "";
 	if (caracteristicaMayor > 0){
-		claveArbol = this->caracteristicas.at(caracteristicaMayor);
+		claveArbol = this->caracteristicas->at(caracteristicaMayor);
 	}else{
 		claveArbol = "Hoja";
 	}
@@ -156,7 +181,7 @@ void RandomForest::armarArbolDeDecision(){
 		Arbol* arbol = cola.front();
 
 		if (caracteristicaMayor > 0){
-			claveArbol = this->caracteristicas.at(caracteristicaMayor);
+			claveArbol = this->caracteristicas->at(caracteristicaMayor);
 		}else{
 			claveArbol = "Hoja";
 		}
@@ -223,8 +248,8 @@ map <string, Porcentaje> RandomForest::armarMapaDeCaracteristica (vector<int>* i
 
 	for (unsigned int i = 0; i < indiceDeCaracteristicas->size(); i++){
 		int posValorCarac = indiceDeCaracteristicas->at(i);
-		string valorCarac = this->setDeDatos[posValorCarac][columnaCaracteristica];
-		string decision = this->setDeDatos[posValorCarac][cols-1];
+		string valorCarac = this->setDeDatos->at(posValorCarac)->at(columnaCaracteristica);
+		string decision = this->setDeDatos->at(posValorCarac)->at(cols-1);
 		Porcentaje p;
 
 		if(caracteristica.find(valorCarac) == caracteristica.end()){
@@ -255,7 +280,7 @@ map <string, vector<int>* > RandomForest::armarMapaDeIndices (vector<int>* indic
 
 	for (unsigned int i = 0; i < indiceDeCaracteristicas->size(); i++){
 		int posValorCarac = indiceDeCaracteristicas->at(i);
-		string valorCarac = this->setDeDatos[posValorCarac][columnaCaracteristica];
+		string valorCarac = this->setDeDatos->at(posValorCarac)->at(columnaCaracteristica);
 		vector<int>* indices;
 
 		if(caracteristica.find(valorCarac) == caracteristica.end()){
@@ -302,7 +327,7 @@ bool RandomForest::tomarDecision (map<string,string> consulta){
  * Obtiene la cantidad de reviews del set de datos.
  */
 unsigned int RandomForest::getCantidadDeDatos(){
-	return this->setDeDatos.size();
+	return this->setDeDatos->size();
 }
 
 /**
@@ -310,5 +335,5 @@ unsigned int RandomForest::getCantidadDeDatos(){
  * teniendo en cuenta el id y la positividad de las mismas.
  */
 unsigned int RandomForest::getCantidadDeCaracteristicas(){
-	return this->setDeDatos[0].size();
+	return this->setDeDatos->at(0)->size();
 }

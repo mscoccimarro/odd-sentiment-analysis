@@ -20,8 +20,8 @@ private:
 
 	/* Atributos */
 	vector<Arbol*>* arboles;
-	vector<string> caracteristicas;
-	vector<vector<string> > setDeDatos;
+	vector<string>* caracteristicas;
+	vector<vector<string>* >* setDeDatos;
 	string valorPositivo;
 
 	/* Funcionalidades internas */
@@ -41,7 +41,7 @@ public:
 	RandomForest();
 	virtual ~RandomForest();
 
-	void insertarSetDeDatos(vector<string> caracteristicas, vector< vector<string> > setDeDatos, string valorPositivo);
+	void insertarSetDeDatos(vector<string>* caracteristicas, vector< vector<string>* >* setDeDatos, string valorPositivo);
 	void armarArbolDeDecision();
 
 	bool tomarDecision (map<string,string> consulta);
