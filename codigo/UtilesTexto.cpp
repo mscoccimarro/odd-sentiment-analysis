@@ -9,7 +9,6 @@ UtilesTexto::UtilesTexto(){
 	this->signosPuntuacion.push_back('.');
 	this->signosPuntuacion.push_back(',');
 	this->signosPuntuacion.push_back('?');
-	this->signosPuntuacion.push_back('!');
 	this->signosPuntuacion.push_back('(');
 	this->signosPuntuacion.push_back(')');
 	this->signosPuntuacion.push_back('{');
