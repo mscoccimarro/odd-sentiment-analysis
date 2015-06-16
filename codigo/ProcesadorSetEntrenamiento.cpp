@@ -1,12 +1,8 @@
 #include "ProcesadorSetEntrenamiento.h"
 #include "ProcesadorReviews.h"
-#include "SetEntrenamiento.h"
 #include "UtilesTexto.h"
 #include <iostream>
-#include <string>
 #include <fstream>
-#include <vector>
-#include <ctime>
 #define OK 0
 #define ERROR -1
 #define CANT_REVIEWS_PROCESADOS 5000

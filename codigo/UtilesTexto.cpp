@@ -1,6 +1,4 @@
 #include "UtilesTexto.h"
-#include <string>
-#include <vector>
 
 using namespace std;
 
