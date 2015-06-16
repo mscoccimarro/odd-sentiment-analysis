@@ -1,5 +1,6 @@
 #ifndef PROCESADOR_REVIEWS_H
 #define PROCESADOR_REVIEWS_H
+#include "UtilesTexto.h"
 #include <string>
 #include <vector>
 
@@ -10,9 +11,11 @@ class ProcesadorReviews {
 
     private:
 		std::vector<std::string> procesarExclamaciones(std::string *palabra);
-		void limpiarTags(std::string *texto);
+		std::vector<std::string> procesarTexto(std::string *texto);
+		void pre_procesarTexto(std::string *texto);
+		void limpiarTexto(std::string *texto,std::vector<std::string> a_eliminar);
 		void eliminar_comillas_simples(std::string *texto);
-    
+		void limpiarPalabra(std::string *palabra);
 };
 
 #endif

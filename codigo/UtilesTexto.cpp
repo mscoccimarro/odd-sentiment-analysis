@@ -25,14 +25,19 @@ UtilesTexto::UtilesTexto(){
 	this->signosPuntuacion.push_back('=');
 	this->signosPuntuacion.push_back('*');
 	this->signosPuntuacion.push_back('`');
+	this->signosPuntuacion.push_back('_');
 	this->listaTags.push_back("<br />");
 	this->listaTags.push_back("\"");
 	this->listaTags.push_back("¨");
+	this->caracsIndeseables.push_back("");
+	this->caracsIndeseables.push_back("");
 }
 
 vector<char> UtilesTexto::getPuntuacion(){ return this->signosPuntuacion; }
 
 vector<string> UtilesTexto::getTags(){ return this->listaTags; }
+
+vector<string> UtilesTexto::getCaracsIndeseables(){ return this->caracsIndeseables; }
 
 /* Convierte a minuscula el texto recibido */
 void UtilesTexto::aMinuscula (string *texto){
