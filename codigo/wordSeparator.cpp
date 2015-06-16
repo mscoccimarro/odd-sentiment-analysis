@@ -4,6 +4,7 @@
 #include <fstream>  
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <map>
 
 using namespace std;
@@ -15,6 +16,10 @@ string getScale(double score) {
 	if(score >= 0.6 && score < 0.8) return "bueno";
 	if(score >= 0.8) return "muy bueno";
 	return "score out of bounds";
+}
+
+bool pairCompare(const pair<string, int>& firstElem, const pair<string, int>& secondElem) {
+	return firstElem.second > secondElem.second;
 }
 
 int main (){
@@ -61,15 +66,33 @@ int main (){
 		}
 
 		double promedio;
+		vector< pair<string, int> > word_total;
+		map<string, string> word_score;
+
 		for(map<string, int>::iterator it = positivos.begin(); it != positivos.end(); it++) {
 			// Si la palabra tiene apariciones negativas
 			string word = it->first.substr(0, it->first.length() - 2);
+			int total_appearances = it->second;
 			if(negativos[word + "_0"]) { 
-				promedio = static_cast<double>(it->second) / static_cast<double>((it->second + negativos[word + "_0"]));
-			} else 
-					promedio = 1;
+				total_appearances += negativos[word + "_0"];
+				promedio = static_cast<double>(it->second) / static_cast<double>(total_appearances);
+			} else promedio = 1;
 
+			// fill word total
+			word_total.push_back(make_pair(word, total_appearances));
+			// fill word score
+			word_score[word] = getScale(promedio);
 			out << word << " => " << promedio << " => " << getScale(promedio) << "\n";
+		}
+
+		// sort word total in descending order
+		sort(word_total.begin(), word_total.end(), pairCompare);			
+		//for(vector< pair<string, int> >::iterator it = word_total.begin(); it != word_total.end(); it++) {
+		//	cout << it->first << " => " << it->second << endl;
+		//}
+
+		for(vector< pair<string, int> >::iterator it = word_total.begin(); it != word_total.begin() + 50; it++) {
+			cout << it->first << " => " << it->second << " => " << word_score[it->first]  << endl;
 		}
 
 	}	
