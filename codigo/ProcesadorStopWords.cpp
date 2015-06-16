@@ -1,58 +1,31 @@
 #include "ProcesadorStopWords.h"
 #include <fstream>
-#include <string>
 #define ERROR -1
 #define OK 0
 
 using namespace std;
 
-/*Si ocurre algun problema al abrir el archivo de stop words, la lista queda vacia.*/
+/*Si ocurre algun problema al abrir el archivo de stop words, el set queda vacio.*/
 ProcesadorStopWords::ProcesadorStopWords(){
-    
     ifstream archStopWords ("listaStopWords.txt");
     string linea;
-	
 	if (archStopWords.is_open()){
-    
-		while (getline (archStopWords,linea)) 
-			
-			this->listaStopWords.push_back(linea);
-		
-		limpiarStopWords();		
+    	while (getline (archStopWords,linea)){ 
+			linea.erase(linea.length()-1,1); //Elimino '/r' del ultimo caracter de la stop word.
+			this->listaStopWords.insert(linea);
+		}
 		archStopWords.close();
 	}
-}
-
-
-/*Elimina '/r' del ultimo caracter de las stop words.*/
-void ProcesadorStopWords::limpiarStopWords(){
-	
-	vector<string>::iterator it;
-	for(it = this->listaStopWords.begin(); it != this->listaStopWords.end(); it++) 
-		
-		(*it).erase((*it).length() - 1, 1);
-			
 }
 
 /*Elimina palabras consideradas stop words del vector de strings recibido, devulve ERROR en 
  * caso de que la lista estuviera vacia.*/
 int ProcesadorStopWords::eliminarStopWords(vector <string> *palabras_review){
-	
-	vector<string>::iterator i,j;
 	if (!this->listaStopWords.empty()) {
-	
-		for (i = palabras_review->begin() ; i < palabras_review->end(); i++){
-	
-			j = this->listaStopWords.begin();
-	
-			while (j != this->listaStopWords.end()) {
-				if ((*i).compare(*j) == OK) {
-					palabras_review->erase(i);
-					i--; // Para que no ignore la siguiente palabra.
-					j = this->listaStopWords.end();				 
-				}
-				else j++; 
-			}
+		vector<string>::iterator i = palabras_review->begin();
+		while(i != palabras_review->end()){
+			if (this->listaStopWords.find(*i) != this->listaStopWords.end()) palabras_review->erase(i);
+			else i++;
 		} 
 		return OK;
 	} 
