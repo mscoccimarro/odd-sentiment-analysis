@@ -1,4 +1,4 @@
-OBJS = prueba.o SetEntrenamiento.o ProcesadorSetEntrenamiento.o UtilesTexto.o ProcesadorReviews.o Arbol.o RandomForest.o \
+OBJS = prueba.o ProcesadorSet.o ProcesadorSetEntrenamiento.o SetReviews.o SetEntrenamiento.o UtilesTexto.o ProcesadorReviews.o Arbol.o RandomForest.o \
 EliminadorSufijos.o ProcesadorSufijos.o ProcesadorStopWords.o
 CC = g++
 OFLAGS = -o
@@ -7,13 +7,19 @@ CFLAGS = -c
 test.exe : $(OBJS)
 	$(CC) $(OBJS) $(OFLAGS) test
 
-prueba.o : prueba.cpp SetEntrenamiento.h ProcesadorSetEntrenamiento.h RandomForest.h 
+prueba.o : prueba.cpp SetEntrenamiento.h ProcesadorSetEntrenamiento.h ProcesadorSet.h RandomForest.h 
 	$(CC) $(CFLAGS) prueba.cpp
 
-ProcesadorSetEntrenamiento.o : ProcesadorSetEntrenamiento.h ProcesadorSetEntrenamiento.cpp ProcesadorReviews.h SetEntrenamiento.h UtilesTexto.h
+ProcesadorSet.o : ProcesadorSet.h ProcesadorSet.cpp SetReviews.h UtilesTexto.h ProcesadorReviews.h
+	$(CC) $(CFLAGS) ProcesadorSet.cpp
+	
+ProcesadorSetEntrenamiento.o : ProcesadorSetEntrenamiento.h ProcesadorSetEntrenamiento.cpp ProcesadorReviews.h SetEntrenamiento.h UtilesTexto.h ProcesadorSet.h SetReviews.h
 	$(CC) $(CFLAGS) ProcesadorSetEntrenamiento.cpp
 
-SetEntrenamiento.o : SetEntrenamiento.h SetEntrenamiento.cpp
+SetReviews.o : SetReviews.h SetReviews.cpp
+	$(CC) $(CFLAGS) SetReviews.cpp
+	
+SetEntrenamiento.o : SetEntrenamiento.h SetEntrenamiento.cpp SetReviews.h
 	$(CC) $(CFLAGS) SetEntrenamiento.cpp
 
 UtilesTexto.o : UtilesTexto.h UtilesTexto.cpp 
