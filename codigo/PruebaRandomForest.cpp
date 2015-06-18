@@ -50,7 +50,18 @@ void armarRandomForestEjercicioDeDatos1(RandomForest* randomForest){
 	{"7", "regular", "primarios",      "baja", 	"no"},
 	{"8", "regular", "universitarios", "media", "si"}
 	};
-
+/*
+	string matriz[filas][cols] = {
+	{"1", "buena",   "universitarios", "alta", "muy bueno", "si"},
+	{"2", "mala",    "universitarios", "media", "bueno", "no"},
+	{"3", "mala",    "secundarios",    "alta",  "regular","no"},
+	{"4", "mala",    "universitarios", "baja",  "regular","si"},
+	{"5", "buena",   "secundarios",    "media", "malo","si"},
+	{"6", "buena",   "universitarios", "media", "muy malo","si"},
+	{"7", "regular", "primarios",      "baja", 	"bueno","no"},
+	{"8", "regular", "universitarios", "media", "bueno","si"}
+	};
+*/
 	vector<string>* vectorCaracteristicas = vectorAPuntero(caracteristicas, cols);
 	vector< vector<string>* >* matrizConVector = new vector < vector<string>* >;
 	for (unsigned int i = 0; i < filas; i++) {
@@ -136,6 +147,47 @@ void armarRandomForestEjercicioDeYouTube(RandomForest* randomForest){
 }
 
 /**
+ * Inserta los datos del ejercicio de you tube.
+ */
+void armarRandomForestEjercicioSimilarKaggle(RandomForest* randomForest){
+	const unsigned int filas = 14;
+	const unsigned int cols = 5;
+
+	string caracteristicas[cols] = {"Day", "Outlook", "Humidity", "Wind", "Play"};
+
+	string matriz[filas][cols] = {
+	{"D1" , "muy buenoC1",    "maloC2",   		"buenoC3",    "No" },
+	{"D2" , "buenoC1",   		"muy buenoC2",    "buenoC3", 	"No" },
+	{"D3" , "buenoC1",		"buenoC2",   		"buenoC3",  	"Yes"},
+	{"D4" , "maloC1",   		"muy buenoC2",    "maloC3",   	"Yes"},
+	{"D5" , "muy buenoC1",    "maloC2", 		"maloC3",   	"Yes"},
+	{"D6" , "regularC1",      "regularC2", 		"muy buenoC3","No" },
+	{"D7" , "buenoC1",		"muy buenoC2", 	"buenoC3", 	"Yes"},
+	{"D8" , "muy maloC1",     "buenoC2",   		"buenoC3",  	"No" },
+	{"D9" , "muy buenoC1",    "buenoC2", 		"buenoC3",    "Yes"},
+	{"D10", "buenoC1",     	"buenoC2", 		"regularC3",  "Yes"},
+	{"D11", "muy buenoC1",    "regularC2", 		"muy maloC3", "Yes"},
+	{"D12", "buenoC1", 		"regularC2",  	"muy buenoC3","Yes"},
+	{"D13", "muy buenoC1",	"muy buenoC2", 	"muy maloC3", "Yes"},
+	{"D14", "muy maloC1",     "muy maloC2",   	"muy maloC3", "No" }
+	};
+
+	vector<string>* vectorCaracteristicas = vectorAPuntero(caracteristicas, cols);
+	vector< vector<string>* >* matrizConVector = new vector < vector<string>* >;
+	for (unsigned int i = 0; i < filas; i++) {
+		vector<string>* fila = new vector <string>;
+		for (unsigned int j = 0; j < cols; j++) {
+			fila->push_back(matriz[i][j]);
+		}
+		matrizConVector->push_back(fila);
+	}
+
+	string valorPositivo = "Yes";
+	randomForest->insertarSetDeDatos(vectorCaracteristicas, matrizConVector, valorPositivo);
+}
+
+
+/**
  * Prueba el armado del arbol.
  */
 void testRandomForestEjercicioDeDatos(bool ejecutar){
@@ -180,13 +232,14 @@ void testTomarDecisionRandomForestEjercicioDeDatos(bool ejecutar){
 	armarRandomForestEjercicioDeDatos1(randomForest);
 	randomForest->armarArbolDeDecision();
 
-	cout << endl << "Arbol 2:";
+	cout << endl << endl << "Arbol 2:";
 	armarRandomForestEjercicioDeDatos2(randomForest);
 	randomForest->armarArbolDeDecision();
 
 
 	map<string,string> consulta;
-	consulta["presencia"] = "regular";
+	consulta["gonzalo"] = "bueno";
+	consulta["presencia"] = "mala";
 	consulta["estudios"] = "universitarios";
 	consulta["experiencia"] = "alta";
 
@@ -232,11 +285,39 @@ void testTomarDecisionRandomForestEjercicioDeYouTube(bool ejecutar){
 	cout << endl << endl << "Fin toma de decision" << endl;
 }
 
+void testTomarDecisionRandomForestEjercicioSimilarKaggle(bool ejecutar){
+	if(!ejecutar)
+		return;
+	cout << endl << endl << "/--------  ARMAR RANDOM FOREST - TOMA DE DECISION - EJERCICIO SIMILAR KAGGLE ---------/" << endl << endl;
+
+	RandomForest* randomForest = new RandomForest;
+	armarRandomForestEjercicioSimilarKaggle(randomForest);
+	randomForest->armarArbolDeDecision();
+
+	map<string,string> consulta;
+	consulta["Outlook"] = "buenoC1";
+	consulta["Humidity"] = "regularC2";
+	consulta["Wind"] = "muy maloC3";
+
+	bool decision = randomForest->tomarDecision(consulta);
+	delete randomForest;
+
+	cout << "Decision final: ";
+	if (decision){
+		cout << "Verdadera";
+	}else{
+		cout << "Falsa";
+	}
+	cout << endl << endl << "Fin toma de decision" << endl;
+}
+
 int main() {
 
-	testRandomForestEjercicioDeDatos(true);
-	testRandomForestEjercicioYouTube(true);
+	testRandomForestEjercicioDeDatos(false);
+	testRandomForestEjercicioYouTube(false);
 	testTomarDecisionRandomForestEjercicioDeDatos(true);
-	testTomarDecisionRandomForestEjercicioDeYouTube(true);
+	testTomarDecisionRandomForestEjercicioDeYouTube(false);
+	testTomarDecisionRandomForestEjercicioSimilarKaggle(false);
 	return 0;
 }
+

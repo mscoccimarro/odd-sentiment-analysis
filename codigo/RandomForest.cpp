@@ -2,6 +2,17 @@
 
 /* ------------------ FUNCIONALIDADES GENERICAS ------------------------*/
 
+void printVector (vector<int>* vector){
+	for (unsigned int i = 0; vector != NULL && i < vector->size(); i++ ){
+		if (i == 0){
+			cout << endl << "[" << vector->at(i);
+		}else{
+			cout << ", " << vector->at(i);
+		}
+	}
+	cout << "]" << endl;
+}
+
 /**
  * Funcionalidad que duvuelve si el valor esta en el vector.
  */
@@ -188,11 +199,20 @@ void RandomForest::armarArbolDeDecision(){
 		arbol->setClave(claveArbol);
 		cola.pop();
 
-		vector<Arbol*>* hijos = this->armarHijos(arbol,caracteristicaYaProcesada);
+		vector<Arbol*>* hijos = this->armarHijos(arbol, caracteristicaMayor);
 
 		if (caracteristicaMayor > 0){
 			caracteristicaYaProcesada->push_back(caracteristicaMayor);
 		}
+//		printVector(caracteristicaYaProcesada);
+
+
+		/*
+		if(claveArbol.compare("experiencia") == 0){
+			cout << endl << "/////// PROBANDO... /////////" << endl;
+			printVector(caracteristicaYaProcesada);
+		}*/
+
 		caracteristicaMayor = this->getCaracteristicaMayor(arbol->getIndicesDeCaracteristica(), caracteristicaYaProcesada);
 
 		if (hijos != NULL){
@@ -212,10 +232,10 @@ void RandomForest::armarArbolDeDecision(){
 /**
  * Construye los hijos del arbol de decision
  */
-vector<Arbol*>* RandomForest::armarHijos(Arbol* arbol, vector<int>* caracteristicaYaProcesada){
+vector<Arbol*>* RandomForest::armarHijos(Arbol* arbol,  int caracteristicaMayor){
 
 	vector<int>* indiceDeCaracteristicas = this->armarIndiceDeCarateristicas(arbol->getIndicesDeCaracteristica());
-	int caracteristicaMayor = this->getCaracteristicaMayor(indiceDeCaracteristicas, caracteristicaYaProcesada);
+//	int caracteristicaMayor = this->getCaracteristicaMayor(indiceDeCaracteristicas, caracteristicaYaProcesada);
 	vector<Arbol*>* hijos = NULL;
 
 	if (caracteristicaMayor > 0){
@@ -295,29 +315,38 @@ map <string, vector<int>* > RandomForest::armarMapaDeIndices (vector<int>* indic
 }
 
 /**
- * Toma la decision dependiendo la consulta pasada por parametro. En caso de no encontrar decision está devolviendo falso.
+ * Toma la decision dependiendo la consulta pasada por parametro. En caso de no encontrar decision devuelve NULL
  * La decision la tomará verdadera si la mitad o mas de las decisiones de los arboles sobre la consulta, fue verdadera.
  */
 bool RandomForest::tomarDecision (map<string,string> consulta){
 
 	if (this->arboles == NULL || this->arboles->empty()){
-		return false;
+		return NULL;
 	}
 
 	double arbolesPositivos = 0;
 	double arbolesTotales = 0;
 
 	for (unsigned int i = 0; i < this->arboles->size(); i++){
-		bool decision = this->arboles->at(i)->tomarDecision(consulta);
-		if (decision)
-			arbolesPositivos++;
-		arbolesTotales++;
+		bool* decision = this->arboles->at(i)->tomarDecision(consulta);
+		if (decision != NULL){
+			if (*decision == true)
+				arbolesPositivos++;
+			arbolesTotales++;
+			delete decision;
+		}
 	}
 
 	double cantidadTotal = arbolesPositivos / arbolesTotales;
 	cout << endl << endl << "cantidad positivos: " << arbolesPositivos << endl;
 	cout << "cantidad total: " << arbolesTotales << endl;
-	return cantidadTotal >= 0.5;
+
+	while (cantidadTotal == 0.5){
+		srand((unsigned)time(0));
+		cantidadTotal = (double)(rand()%(100))/100;
+	}
+
+	return cantidadTotal > 0.5;
 }
 
 

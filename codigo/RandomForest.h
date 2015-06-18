@@ -32,7 +32,7 @@ private:
 	int getCaracteristicaMayor(vector<int>* indiceDeCaracteristicas, vector<int>* caracteristicasYaProcesadas);
 
 	vector<int>* armarIndiceDeCarateristicas (vector<int>* indiceDeCaracteristicas);
-	vector<Arbol*>* armarHijos(Arbol* arbol, vector<int>* caracteristicaYaProcesada);
+	vector<Arbol*>* armarHijos(Arbol* arbol, int caracteristica);
 
 	map <string, Porcentaje> armarMapaDeCaracteristica (vector<int>* indiceDeCaracteristicas, int columnaCaracteristica);
 	map <string, vector<int>* > armarMapaDeIndices (vector<int>* indiceDeCaracteristicas, int columnaCaracteristica);

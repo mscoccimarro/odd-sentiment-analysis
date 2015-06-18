@@ -44,7 +44,7 @@ public:
 
 	void insertarHijo(string clave, string valor,double porcentaje, vector<int>* caracteristicas);
 	void ordenarHijosPorImportancia();
-	bool tomarDecision(map<string,string> consulta);
+	bool* tomarDecision(map<string,string> consulta);
 	void verArbol();
 };
 

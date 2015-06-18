@@ -76,9 +76,9 @@ void Arbol::insertarHijo(string clave, string valor,double porcentaje, vector<in
 
 /**
  * Devuelve la decision tomada por el arbol, dependiendo la consulta.
- * En caso de no encontrar decision devuelve false.
+ * En caso de no encontrar decision devuelve NULL.
  */
-bool Arbol::tomarDecision(map<string,string> consulta){
+bool* Arbol::tomarDecision(map<string,string> consulta){
 
 	vector<Arbol*>* hijos = this->hijos;
 	for (unsigned int i = 0; hijos != NULL && i < hijos->size(); i++){
@@ -86,17 +86,35 @@ bool Arbol::tomarDecision(map<string,string> consulta){
 		string valorCaracteristica = consulta[this->getClave()];
 //		cout << endl << "comparo: " << valorCaracteristica << " - " << hijo->getValor();
 		if (valorCaracteristica.compare(hijo->getValor()) == 0){
+			bool* decisionP = NULL;
 
 			if (hijo->isHoja()){
-				return (hijo->getPorcentaje() == 1);
+
+				decisionP = new bool;
+				bool decision = (hijo->getPorcentaje() == 1);
+				*decisionP = decision;
+				return decisionP;
+
 			}else if (!hijo->tieneHijos()){
-				return (hijo->getPorcentaje() > 0.5);
+
+				double porcentaje = hijo->getPorcentaje();
+				while (porcentaje == 0.5){
+//					cout << "Porc while 1: " << (double)porcentaje;
+					srand((unsigned)time(0));
+					porcentaje = (double)(rand()%(100))/100;
+//					cout << " | Porc while 2: " << (double)porcentaje << endl;
+				}
+				decisionP = new bool;
+				bool decision = (porcentaje > 0.5);
+				*decisionP = decision;
+				return decisionP;
+
 			}
 			return hijo->tomarDecision(consulta);
 		}
 	}
 	cout << endl << "NO HUBO DECISION";
-	return false;
+	return NULL;
 }
 
 /**
