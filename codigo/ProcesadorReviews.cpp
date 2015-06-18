@@ -65,7 +65,7 @@ vector<string> ProcesadorReviews::procesarTexto(string *texto){
 	while(*texto->begin() == CARAC_BLANCO) texto->erase(texto->begin());	
 	while (texto->size() > 0){
 		palabra = texto->substr(0,texto->find(delimitador));
-		if(palabra.length()>0){
+		if(palabra.length()>0 && palabra != STRING_VACIO){
 			texto->erase(0, palabra.size() + delimitador.size());
 			exclamaciones = procesarExclamaciones(&palabra); 
 			palabras.push_back(palabra);
