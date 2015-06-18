@@ -2,17 +2,6 @@
 
 /* ------------------ FUNCIONALIDADES GENERICAS ------------------------*/
 
-void printVector (vector<int>* vector){
-	for (unsigned int i = 0; vector != NULL && i < vector->size(); i++ ){
-		if (i == 0){
-			cout << endl << "[" << vector->at(i);
-		}else{
-			cout << ", " << vector->at(i);
-		}
-	}
-	cout << "]" << endl;
-}
-
 /**
  * Funcionalidad que duvuelve si el valor esta en el vector.
  */
@@ -204,14 +193,6 @@ void RandomForest::armarArbolDeDecision(){
 		if (caracteristicaMayor > 0){
 			caracteristicaYaProcesada->push_back(caracteristicaMayor);
 		}
-//		printVector(caracteristicaYaProcesada);
-
-
-		/*
-		if(claveArbol.compare("experiencia") == 0){
-			cout << endl << "/////// PROBANDO... /////////" << endl;
-			printVector(caracteristicaYaProcesada);
-		}*/
 
 		caracteristicaMayor = this->getCaracteristicaMayor(arbol->getIndicesDeCaracteristica(), caracteristicaYaProcesada);
 
@@ -235,7 +216,6 @@ void RandomForest::armarArbolDeDecision(){
 vector<Arbol*>* RandomForest::armarHijos(Arbol* arbol,  int caracteristicaMayor){
 
 	vector<int>* indiceDeCaracteristicas = this->armarIndiceDeCarateristicas(arbol->getIndicesDeCaracteristica());
-//	int caracteristicaMayor = this->getCaracteristicaMayor(indiceDeCaracteristicas, caracteristicaYaProcesada);
 	vector<Arbol*>* hijos = NULL;
 
 	if (caracteristicaMayor > 0){
