@@ -29,7 +29,8 @@ int main (){
 	vector<string>::iterator i,j;
 	ofstream out("words.txt");
 	ProcesadorSetEntrenamiento *pSetEntrenamiento = new ProcesadorSetEntrenamiento();
-	SetEntrenamiento *setEntrenamiento = pSetEntrenamiento->procesarSetEntrenamiento();
+	SetEntrenamiento *setEntrenamiento = new SetEntrenamiento();
+	pSetEntrenamiento->procesarSet(setEntrenamiento);
 	map<string, int> positivos;	
 	map<string, int> negativos;
 

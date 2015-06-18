@@ -29,7 +29,8 @@ map<string, string> getWordScore(int topQuantity) {
 	string sentimiento;
 	vector<string>::iterator i,j;
 	ProcesadorSetEntrenamiento *pSetEntrenamiento = new ProcesadorSetEntrenamiento();
-	SetEntrenamiento *setEntrenamiento = pSetEntrenamiento->procesarSetEntrenamiento();
+	SetEntrenamiento *setEntrenamiento = new SetEntrenamiento();
+	pSetEntrenamiento->procesarSet(setEntrenamiento);
 	map<string, int> positivos;	
 	map<string, int> negativos;
 	map<string, string> empty_map;
