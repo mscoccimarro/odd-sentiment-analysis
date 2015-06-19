@@ -1,8 +1,8 @@
 OBJS = prueba.o ProcesadorSet.o ProcesadorSetEntrenamiento.o SetReviews.o SetEntrenamiento.o UtilesTexto.o ProcesadorReviews.o Arbol.o RandomForest.o \
-EliminadorSufijos.o ProcesadorSufijos.o ProcesadorStopWords.o
+EliminadorSufijos.o ProcesadorSufijos.o ProcesadorStopWords.o wordScorer.o
 CC = g++
 OFLAGS = -o
-CFLAGS = -c
+CFLAGS = -c -ggdb
 
 test.exe : $(OBJS)
 	$(CC) $(OBJS) $(OFLAGS) test
@@ -43,6 +43,9 @@ Arbol.o : Arbol.h Arbol.cpp
 RandomForest.o : RandomForest.h RandomForest.cpp Arbol.h
 	$(CC) $(CFLAGS) RandomForest.cpp
 
+wordScorer.o : wordScorer.h wordScorer.cpp SetEntrenamiento.h
+	$(CC) $(CFLAGS) wordScorer.cpp
+	
 clean:
 	\rm *.o *~ test
 

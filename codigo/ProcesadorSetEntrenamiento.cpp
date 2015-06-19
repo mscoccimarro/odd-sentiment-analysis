@@ -41,7 +41,7 @@ void ProcesadorSetEntrenamiento::obtenerReview(SetReviews *setR,string linea){
 
 	if (resultado==OK) ((SetEntrenamiento*)setR)->agregarReview(id_review,sentimiento_review,contenido_review);
 	else setR->vaciar();
-
+	
 	delete pReviews;
 	delete util;
 }

@@ -1,5 +1,3 @@
-#include "ProcesadorSetEntrenamiento.h"
-#include "SetEntrenamiento.h"
 #include "wordScorer.h"
 #include <iostream>
 #include <string>
@@ -23,23 +21,15 @@ bool pairCompare(const pair<string, int>& firstElem, const pair<string, int>& se
 }
 
 // returns word => score relation from processed training file
-map<string, string> getWordScore(int topQuantity) {
-
+map<string, string> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamiento) {
 	vector<string> ids,contenido;
 	string sentimiento;
 	vector<string>::iterator i,j;
-	ProcesadorSetEntrenamiento *pSetEntrenamiento = new ProcesadorSetEntrenamiento();
-	SetEntrenamiento *setEntrenamiento = new SetEntrenamiento();
-	pSetEntrenamiento->procesarSet(setEntrenamiento);
-	map<string, int> positivos;	
+	map<string, int> positivos;
 	map<string, int> negativos;
-	map<string, string> empty_map;
-
-	// Fill maps with words
-	if (!setEntrenamiento->vacio()){
-		ids = setEntrenamiento->getIds();
-		i = ids.begin();
-		while(i != ids.end()){
+	ids = setEntrenamiento->getIds();
+	i = ids.begin();
+	while(i != ids.end()){
 			string sentiment = setEntrenamiento->getSentimiento(*i);
 			contenido = setEntrenamiento->getContenido(*i);
 			j = contenido.begin();
@@ -74,9 +64,6 @@ map<string, string> getWordScore(int topQuantity) {
 		map<string, string> word_score, result;
 		cout << endl << "Obteniendo score de " << topQuantity  << " palabras..." << endl;
 
-		delete pSetEntrenamiento;
-		delete setEntrenamiento;
-		
 		for(map<string, int>::iterator it = positivos.begin(); it != positivos.end(); it++) {
 			// Si la palabra tiene apariciones negativas
 			string word = it->first.substr(0, it->first.length() - 2);
@@ -102,8 +89,5 @@ map<string, string> getWordScore(int topQuantity) {
 		}
 
 		return result;
-	}	
-	else cout << "Ocurrio un problema al intentar procesar el set de entrenamiento." << endl;	
-
-	return empty_map; 
+		
 }
