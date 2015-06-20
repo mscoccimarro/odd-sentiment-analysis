@@ -16,4 +16,21 @@ int main (int argc, char* argv[]){
 		testFile = argv[2];
 	}
 
+	string valorPositivo = "1";
+
+	SetEntrenamiento* set = new SetEntrenamiento();
+	ProcesadorSetEntrenamiento* procesadorSetEntrenamiento = new ProcesadorSetEntrenamiento(trainingFile);
+	procesadorSetEntrenamiento->procesarSet(set);
+
+	vector<string>* vectorCaracteristicas = new vector<string>*;
+	vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
+
+	RandomForest* randomForest = new RandomForest();
+
+	for (unsigned int i = 0; vectorDeMatrices != NULL && i < vectorDeMatrices->size(); i++){
+		vector<vector<string>* >* matriz = vectorDeMatrices->at(i);
+		randomForest->insertarSetDeDatos(vectorCaracteristicas, matriz, valorPositivo);
+		randomForest->armarArbolDeDecision();
+	}
+
 }
