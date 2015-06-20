@@ -78,14 +78,16 @@ RandomForest::~RandomForest(){
  */
 void RandomForest::insertarSetDeDatos(vector< vector<string>* >* matriz){
 
-	//if (this->setDeDatos != NULL){
-	//	for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
-	//		delete this->setDeDatos->at(i);
-	//	}
-	//	delete this->setDeDatos;
-	//}
+	if (this->setDeDatos != NULL){
+		for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
+			delete this->setDeDatos->at(i);
+		}
+		delete this->setDeDatos;
+	}
+
 
 	this->setDeDatos = matriz;
+
 }
 
 /**
@@ -116,7 +118,6 @@ double RandomForest::getGanancia (vector<int>* indiceDeCaracteristicas, int colu
 	for (unsigned int i = 0; i < indiceDeCaracteristicas->size(); i++){
 
 		int posicionFila = indiceDeCaracteristicas->at(i);
-		//cout << posicionFila << " => " << columnaCaracteristica << endl;
 		string valor = this->setDeDatos->at(posicionFila)->at(columnaCaracteristica);
 		if (!inVector(valoresDistintos,valor)){
 			valoresDistintos->push_back(valor);
@@ -157,10 +158,12 @@ int RandomForest::getCaracteristicaMayor(vector<int>* indiceDeCaracteristicas, v
  * Construye el arbol de decision a partir del set de datos. Almacena el arbol armado.
  */
 void RandomForest::armarArbolDeDecision(){
+
 	Arbol* raiz = new Arbol ("");
 
 	vector <int>* caracteristicaYaProcesada = new vector<int>;
 	int caracteristicaMayor = this->getCaracteristicaMayor(raiz->getIndicesDeCaracteristica(), caracteristicaYaProcesada);
+
 	string claveArbol = "";
 	if (caracteristicaMayor > 0){
 		claveArbol = this->caracteristicas->at(caracteristicaMayor);
@@ -168,12 +171,12 @@ void RandomForest::armarArbolDeDecision(){
 		claveArbol = "Hoja";
 	}
 	raiz->setClave(claveArbol);
-	queue<Arbol*>* cola = new queue<Arbol*>;
-	cola->push(raiz);
+	queue<Arbol*> cola;
+	cola.push(raiz);
 
-	while (!cola->empty()){
+	while (!cola.empty()){
 
-		Arbol* arbol = cola->front();
+		Arbol* arbol = cola.front();
 
 		if (caracteristicaMayor > 0){
 			claveArbol = this->caracteristicas->at(caracteristicaMayor);
@@ -181,7 +184,7 @@ void RandomForest::armarArbolDeDecision(){
 			claveArbol = "Hoja";
 		}
 		arbol->setClave(claveArbol);
-		cola->pop();
+		cola.pop();
 
 		vector<Arbol*>* hijos = this->armarHijos(arbol, caracteristicaMayor);
 
@@ -195,7 +198,7 @@ void RandomForest::armarArbolDeDecision(){
 			for (unsigned int i = 0; i < hijos->size(); i++){
 				Arbol* hijo = hijos->at(i);
 				if (!hijo->isHoja()){
-					cola->push(hijo);
+					cola.push(hijo);
 				}
 			}
 		}
@@ -293,7 +296,7 @@ map <string, vector<int>* > RandomForest::armarMapaDeIndices (vector<int>* indic
  * Toma la decision dependiendo la consulta pasada por parametro. En caso de no encontrar decision devuelve NULL
  * La decision la tomará verdadera si la mitad o mas de las decisiones de los arboles sobre la consulta, fue verdadera.
  */
-bool RandomForest::tomarDecision (map<string,string> consulta){
+bool RandomForest::tomarDecision (map<string,string>* consulta){
 
 	if (this->arboles == NULL || this->arboles->empty()){
 		return NULL;
@@ -317,7 +320,7 @@ bool RandomForest::tomarDecision (map<string,string> consulta){
 	cout << "cantidad total: " << arbolesTotales << endl;
 
 	while (cantidadTotal == 0.5){
-		srand((unsigned)time(0));
+	//	srand((unsigned)time(0));
 		cantidadTotal = (double)(rand()%(100))/100;
 	}
 

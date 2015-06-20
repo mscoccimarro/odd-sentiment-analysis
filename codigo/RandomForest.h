@@ -44,7 +44,7 @@ public:
 	void insertarSetDeDatos(vector< vector<string>* >* matriz);
 	void armarArbolDeDecision();
 
-	bool tomarDecision (map<string,string> consulta);
+	bool tomarDecision (map<string,string>* consulta);
 };
 
 #endif /* RANDOMFOREST_H_ */
