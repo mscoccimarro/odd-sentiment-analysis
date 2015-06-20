@@ -142,13 +142,19 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 				}
 			}	
 		}	
-		for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
-			if(apariciones[it->first]) {
-				double promedio = static_cast<double>(apariciones[it->first]) / static_cast<double>(reviewSize);
-				string id_word = *id + "_" + it->first;
+		int cant_apariciones = 0;
+		for(map<string, int>::iterator it = apariciones.begin(); it != apariciones.end(); it++) 
+			cant_apariciones += it->second;
+
+	for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
+		if(apariciones[it->first]) {
+			double promedio = static_cast<double>(apariciones[it->first]) / static_cast<double>(cant_apariciones);
+			string id_word = *id + "_" + it->first;
 				word_score[id_word] = getScale(promedio);
 			}
 		}
+	// reset apariciones
+	apariciones.clear();
 	}
 	vector < vector <string>* >* matrizGigante = new vector < vector<string>* >;
 	cargar_matriz_y_vector(matrizGigante,vectorCaracteristicas,&copia_ids,&palabras,word_score);

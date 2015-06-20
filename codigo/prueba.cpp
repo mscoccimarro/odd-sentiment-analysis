@@ -25,14 +25,18 @@ int main (int argc, char* argv[]){
 	vector<string>* vectorCaracteristicas = new vector<string>;
 	vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
 
-	set->get_N_caracteristicas(20, vectorCaracteristicas, vectorDeMatrices);
+	set->get_N_caracteristicas(10, vectorCaracteristicas, vectorDeMatrices);
 
 	RandomForest* randomForest = new RandomForest(vectorCaracteristicas, valorPositivo);
 
 	for (unsigned int i = 0; vectorDeMatrices != NULL && i < vectorDeMatrices->size(); i++){
 		vector<vector<string>* >* matriz = vectorDeMatrices->at(i);
-		randomForest->insertarSetDeDatos(matriz);
-		randomForest->armarArbolDeDecision();
+		if(matriz != NULL) {
+			randomForest->insertarSetDeDatos(matriz);
+			cout << "Arbol " << i << endl;
+			cout << "/---------------------------------------/" << endl << endl;
+			randomForest->armarArbolDeDecision();
+		}	
 	}
 
 }
