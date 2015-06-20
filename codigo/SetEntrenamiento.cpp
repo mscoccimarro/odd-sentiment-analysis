@@ -87,6 +87,9 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 	out << endl;
 	out.close();
 }
+std::map<std::string, double> SetEntrenamiento::getTopN(){
+	return this->topNPalabras;
+}
 
 void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * vectorCaracteristicas,
 																	vector< vector< vector<string> *> *> *matrices){ 
@@ -100,6 +103,7 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	
 	// Obtengo score del top N de palabras
 	map<string, double> palabras = getWordScore(nro_palabras,this);
+	this->topNPalabras = palabras;
 	cout << "Score obtenido.\n";
 
 	cout << "\nProcesando palabras...\n";
@@ -171,7 +175,7 @@ void SetEntrenamiento::getMatrices(vector < vector <string>* >* matrizGigante,ve
 	for (unsigned int i = 0; i < CANTIDAD_DE_MATRICES; i++){
 		vector < vector <string>* >* matriz = new vector < vector <string>* >;
 		
-		for (unsigned int j = 0; j < (MAX_REVIEWS_MATRIZ / CANTIDAD_DE_MATRICES); j++){
+		for (unsigned int j = 0; j < 20; j++){
 			//srand(rd());
 			int indiceFila = rand()%(matrizGigante->size());
 			vector <string>* fila = matrizGigante->at(indiceFila);

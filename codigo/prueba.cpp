@@ -2,6 +2,7 @@
 #include "ProcesadorSetEntrenamiento.h"
 #include "RandomForest.h"
 #include <iostream>
+#include <fstream>
 #include <string>
 using namespace std;
 
@@ -38,5 +39,21 @@ int main (int argc, char* argv[]){
 			randomForest->armarArbolDeDecision();
 		}	
 	}
+	
+	map<string,double> top_n_palabras = set->getTopN();
+	SetReviews *setTest = new SetReviews();
+	ProcesadorSet* procesadorSetReviews = new ProcesadorSet(testFile);
+	procesadorSetReviews->procesarSet(setTest);
+	vector<string> ids = setTest->getIds();
+	ofstream out("clasificaciones.txt");	
+	for (vector<string>::iterator id = ids.begin(); id != ids.begin()+2; id++){
+		map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
+		for (map<string,string>::iterator it = consulta->begin(); it != consulta->end(); it++){
+			cout << "Palabra: " << it->first << " Valor: " << it->second << endl;
+		}
+		bool clasificacion_review = randomForest->tomarDecision(consulta);
+		out << "ID: " << *id << " Clasificacion:" << clasificacion_review << endl;
+	}
+	out.close();
 
 }

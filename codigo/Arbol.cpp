@@ -113,7 +113,7 @@ bool* Arbol::tomarDecision(map<string,string>* consulta){
 			return hijo->tomarDecision(consulta);
 		}
 	}
-	cout << endl << "NO HUBO DECISION";
+//	cout << endl << "NO HUBO DECISION";
 	return NULL;
 }
 

@@ -78,13 +78,13 @@ RandomForest::~RandomForest(){
  */
 void RandomForest::insertarSetDeDatos(vector< vector<string>* >* matriz){
 
-	if (this->setDeDatos != NULL){
+/*	if (this->setDeDatos != NULL){
 		for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
 			delete this->setDeDatos->at(i);
 		}
 		delete this->setDeDatos;
 	}
-
+*/
 
 	this->setDeDatos = matriz;
 

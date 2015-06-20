@@ -9,7 +9,7 @@
 class SetEntrenamiento: public SetReviews {
 
     public:
-
+		std::map<std::string, double> getTopN();
 		void agregarReview(std::string id_review, std::string sentimiento_review,std::vector<std::string> contenido_review);
 		std::string getSentimiento(std::string id_review);
 		void get_N_caracteristicas(int nro_palabras, std::vector<std::string>* vectorCaracteristicas,
@@ -18,7 +18,7 @@ class SetEntrenamiento: public SetReviews {
 		void vaciar();
 
 	private:
-
+		std::map<std::string, double> topNPalabras; 
 		std::map<std::string,std::string> sentimientos;
 		std::map<std::string,	std::set<std::string> > id_contenido;
 		void cargar_matriz_y_vector(std::vector < std::vector <std::string>* >* matrizGigante,
