@@ -6,10 +6,11 @@
 class ProcesadorSet {
     public:		
 		ProcesadorSet();
+		ProcesadorSet(std::string fileName);
 		void procesarSet(SetReviews *setR);
 		
     protected:
-		const char *archivoSet;
+		std::string archivoSet;
 		virtual void mensaje_inicial();
 		virtual void mensaje_final();
 		virtual void error_set();
