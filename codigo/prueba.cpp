@@ -27,11 +27,11 @@ int main (int argc, char* argv[]){
 
 	set->get_N_caracteristicas(20, vectorCaracteristicas, vectorDeMatrices);
 
-	RandomForest* randomForest = new RandomForest();
+	RandomForest* randomForest = new RandomForest(vectorCaracteristicas, valorPositivo);
 
 	for (unsigned int i = 0; vectorDeMatrices != NULL && i < vectorDeMatrices->size(); i++){
 		vector<vector<string>* >* matriz = vectorDeMatrices->at(i);
-		randomForest->insertarSetDeDatos(vectorCaracteristicas, matriz, valorPositivo);
+		randomForest->insertarSetDeDatos(matriz);
 		randomForest->armarArbolDeDecision();
 	}
 
