@@ -42,10 +42,12 @@ bool inVector (vector<string>* vector, string valor){
 /**
  * Constructor
  */
-RandomForest::RandomForest() {
+RandomForest::RandomForest(vector<string>* caracteristicas, string valorPositivo) {
 	this->arboles = new vector<Arbol*>;
 	this->caracteristicas = NULL;
 	this->setDeDatos = NULL;
+	this->caracteristicas = caracteristicas;
+	this->valorPositivo = valorPositivo;
 }
 
 /**
@@ -74,11 +76,7 @@ RandomForest::~RandomForest(){
  * Almacena las caracteristicas, todos los valores de las caracteristicas
  * y el valor que hace positivo a cada una de las caracteristicas.
  */
-void RandomForest::insertarSetDeDatos(vector<string>* caracteristicas, vector< vector<string>* >* matriz, string valorPositivo){
-
-	if (this->caracteristicas != NULL){
-		delete this->caracteristicas;
-	}
+void RandomForest::insertarSetDeDatos(vector< vector<string>* >* matriz){
 
 	if (this->setDeDatos != NULL){
 		for (unsigned int i = 0; i < this->setDeDatos->size(); i++){
@@ -87,9 +85,9 @@ void RandomForest::insertarSetDeDatos(vector<string>* caracteristicas, vector< v
 		delete this->setDeDatos;
 	}
 
-	this->caracteristicas = caracteristicas;
+
 	this->setDeDatos = matriz;
-	this->valorPositivo = valorPositivo;
+
 }
 
 /**

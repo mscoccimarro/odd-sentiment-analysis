@@ -38,10 +38,10 @@ private:
 	map <string, vector<int>* > armarMapaDeIndices (vector<int>* indiceDeCaracteristicas, int columnaCaracteristica);
 
 public:
-	RandomForest();
+	RandomForest(vector<string>* caracteristicas, string valorPositivo);
 	virtual ~RandomForest();
 
-	void insertarSetDeDatos(vector<string>* caracteristicas, vector< vector<string>* >* setDeDatos, string valorPositivo);
+	void insertarSetDeDatos(vector< vector<string>* >* matriz);
 	void armarArbolDeDecision();
 
 	bool tomarDecision (map<string,string> consulta);
