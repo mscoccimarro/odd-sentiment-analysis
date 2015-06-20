@@ -14,8 +14,6 @@ using namespace std;
 
 ProcesadorSet::ProcesadorSet(){ this->archivoSet = "testData.tsv"; }
 
-ProcesadorSet::ProcesadorSet(string fileName){ this->archivoSet = fileName; }
-
 void ProcesadorSet::mensaje_inicial(){ 
 	cout << "---------------------------------------------------------------\n";
 	cout << "Procesando set de test...\n"; 

@@ -1,15 +1,16 @@
 #include "SetEntrenamiento.h"
 #include "wordScorer.h"
 #include <iostream> 
+#include <fstream> 
 #include <iomanip>
 #include <time.h>
 #include <cstdlib>
 #include <math.h>
-#define MAX_REVIEWS_MATRIZ 500
-#define MAX_PALABRAS 5
+#define MAX_REVIEWS_MATRIZ 40
 #define SEC_PER_MIN 60
 #define TITULO_ID "id"
 #define TITULO_SENTIMIENTO "sentimiento"
+#define CANTIDAD_DE_MATRICES 10
 
 using namespace std;
 
@@ -44,54 +45,50 @@ string SetEntrenamiento::getSentimiento(string id_review){
 	return CADENA_VACIA;
 }
 
-void SetEntrenamiento::cargar_matriz_y_vector(int i, vector< vector< vector<string> *> *> * matrices,
-																		vector<vector<string>*> * vectorCaracteristicas,
+void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matrizGigante,
+																		vector<string>* vectorCaracteristicas,
 																		vector<string> *ids,
-																		map<string, string> *palabras,
-																		vector<string> *grupo_palabras){
-
-// Inicializo vector de caracteristicas
-	vector<string> *vector_vacio = new vector<string>;
-	vectorCaracteristicas->push_back(vector_vacio);
-	vectorCaracteristicas->at(i)->push_back(TITULO_ID);
-
-// Inicializo matriz de caracteristicas
-	vector< vector<string> *>*  matriz_vacia = new vector < vector<string> *>;
-	matrices->push_back(matriz_vacia);
-	int id = 0, reviews_procesados = 0;
-	while (id < ids->size() && reviews_procesados <= MAX_REVIEWS_MATRIZ){
-		// Creo una nueva fila por cada ID asociado a la palabra:
-		vector<string> *fila = new vector<string>;
-		fila->push_back(ids->at(id));
-		matrices->at(i)->push_back(fila);
-		id++;
-		reviews_procesados++;
+																		map<string, string> *palabras,map<string,string> word_score){
+	ofstream out("prueba_matriz.txt"); 
+	
+	vectorCaracteristicas->push_back(TITULO_ID);
+	for (map<string,string>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
+		if (palabra->first != "") vectorCaracteristicas->push_back((*palabra).first);
 	}
+	vectorCaracteristicas->push_back(TITULO_SENTIMIENTO);
 
-// Cargo los valores de las caracteristicas	
-	int palabra = 0;
-	while (palabra < grupo_palabras->size()){
-		vectorCaracteristicas->at(i)->push_back(grupo_palabras->at(palabra));
-		int j = 0;
-		while (j < matrices->at(i)->size()){
-			// Busco en el map el score de la palabra y lo agrego a la fila de la matriz
-			matrices->at(i)->at(j)->push_back((*palabras)[grupo_palabras->at(palabra)]);			 
-			j++;
+	for (vector<string>::iterator id = ids->begin(); id != ids->end() ; id++){
+		vector<string>* fila = new vector<string>;
+		fila->push_back(*id);
+		for (map<string,string>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
+		// Busco en el map el score de la palabra y lo agrego a la fila de la matriz
+			string id_palabra = *id + "_" + palabra->first;
+			if (palabra->first != "") fila->push_back(word_score[id_palabra]);
 		}
-		palabra++;
+		fila->push_back(this->sentimientos[*id]);
+		matrizGigante->push_back(fila);
 	}
 
-// Agrego los sentimientos en el vector de caracteristicas y en la matriz:
-	vectorCaracteristicas->at(i)->push_back(TITULO_SENTIMIENTO);
+	out << "Vector caracteristicas: \n";
+	for (vector<string>::iterator j = vectorCaracteristicas->begin() ; j != vectorCaracteristicas->end() ; j++) 
+		out << *j << "\t\t\t";
+	out << endl;
+	out << "Matriz gigante: \n";
 	int j = 0;
-	while (j < matrices->at(i)->size()){
-		matrices->at(i)->at(j)->push_back(this->sentimientos[ids->at(j)]);			 
+	while(j < matrizGigante->size()){
+		int k = 0;
+		while (k < matrizGigante->at(j)->size()){
+			out << matrizGigante->at(j)->at(k) << "\t\t\t\t";
+			k++;
+		}
+		out<< endl;
 		j++;
 	}
-
+	out << endl;
+	out.close();
 }
 
-void SetEntrenamiento::get_N_caracteristicas(int n, vector<vector<string> *>* vectorCaracteristicas,
+void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * vectorCaracteristicas,
 																	vector< vector< vector<string> *> *> *matrices){ 
 
 	clock_t t = clock();
@@ -99,54 +96,81 @@ void SetEntrenamiento::get_N_caracteristicas(int n, vector<vector<string> *>* ve
 	cout << "---------------------------------------------------------------\n";
 	cout << "Generando entrada del random forest...\n";
 	cout << "---------------------------------------------------------------\n";		
+
 	
 	// Obtengo score del top N de palabras
-	map<string,string> palabras = getWordScore(n,this);
+	map<string,string> palabras = getWordScore(nro_palabras,this);
 	cout << "Score obtenido.\n";
-	
+
 	cout << "\nProcesando palabras...\n";
-	map<string,string>::iterator palabra = palabras.begin();
 	// variables para la impresion por pantalla del progreso del proceso
-	int procesadas = 0, procesadas_anterior = 0, max_procesadas = n/10, pos = 0;
-	// n = nro palabras
-	while (n > 0){ 		
-		vector<string> copia_ids = this->listaIds; // En copia_ids tengo los IDs de todos los reviews 
-		int i = 0;
-		vector<string> *grupo_palabras = new vector<string>;
-		while (i < MAX_PALABRAS){ // Tomo MAX_PALABRAS (= 10) palabras por cada iteracion
-			if ((*palabra).first != ""){
-				grupo_palabras->push_back((*palabra).first);
-				// Por cada palabra busco los ids de reviews que la contienen y descarto los que no, de esta forma al final voy a tener
-				// los ids de los reviews que tienen todas las palabras
-				vector<string>::iterator id = copia_ids.begin();
-				while (id != copia_ids.end()){
-					if (this->id_contenido[*id].find((*palabra).first) == this->id_contenido[*id].end())
-						copia_ids.erase(id); // Si el review de esta ID no contenia la palabra, lo borro de la lista de IDs
-					else id++;
-				}
-				i++; 
-				procesadas++;
+	int procesadas = 0, procesadas_anterior = 0, max_procesadas = nro_palabras/10;
+
+	vector<string> copia_ids = this->listaIds; // En copia_ids tengo los IDs de todos los reviews 
+	for (map<string,string>::iterator palabra = palabras.begin(); palabra != palabras.end(); palabra++){
+		if ((*palabra).first != ""){
+			// Por cada palabra busco los ids de reviews que la contienen y descarto los que no, de esta forma al final voy a tener los ids de los reviews que tienen todas las palabras
+			vector<string>::iterator id = copia_ids.begin();
+			while (id != copia_ids.end()){
+				if (this->id_contenido[*id].find((*palabra).first) == this->id_contenido[*id].end())
+					copia_ids.erase(id); // Si el review de esta ID no contenia la palabra, lo borro de la lista de IDs
+				else id++;
 			}
-			palabra++; 
-			if (palabra == palabras.end()) i = MAX_PALABRAS; // Si no tengo mas palabras no sigo procesando
+			procesadas++;
+			if (procesadas >= procesadas_anterior + max_procesadas) {
+				cout << procesadas << " palabras procesadas hasta el momento.\n" ;
+				procesadas_anterior = procesadas;
+			}
 		}
-		if (procesadas >= procesadas_anterior + max_procesadas) {
-			cout << procesadas << " palabras procesadas hasta el momento.\n" ;
-			procesadas_anterior = procesadas;
-		}
-		cargar_matriz_y_vector(pos,matrices,vectorCaracteristicas,&copia_ids,&palabras,grupo_palabras);
-		pos++;
-		delete grupo_palabras;
-		if (palabra == palabras.end()) n = 0; // Si no tengo mas palabras no sigo procesando
-		else n -= MAX_PALABRAS;
 	}
 
+	// Obtengo cantidad de palabras en review para calcular score
+
+	map<string, int> apariciones;
+	map<string, string> word_score;
+
+	for(vector<string>::iterator id = copia_ids.begin(); id != copia_ids.end(); id++) {
+		vector<string> review = this->reviews[*id];	
+	  int reviewSize = review.size();
+		for(int i = 0; i < reviewSize; i++) {
+			for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
+				if(it->first == review[i]) {
+					if(apariciones[it->first])
+						apariciones[it->first]++;
+					else
+						apariciones[it->first] = 1;
+				}
+			}	
+		}	
+		for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
+			if(apariciones[it->first]) {
+				double promedio = static_cast<double>(apariciones[it->first]) / static_cast<double>(reviewSize);
+				string id_word = *id + "_" + it->first;
+				word_score[id_word] = getScale(promedio);
+			}
+		}
+	}
+	vector < vector <string>* >* matrizGigante = new vector < vector<string>* >;
+	cargar_matriz_y_vector(matrizGigante,vectorCaracteristicas,&copia_ids,&palabras,word_score);
+	getMatrices(matrizGigante,matrices);
 	t = clock() - t;
 	cout << "Proceso concluido: " << fixed << setprecision(2) << ((float)t/CLOCKS_PER_SEC)/SEC_PER_MIN << " minutos transcurridos.\n\n";
+}
 
-	// Para la prueba, despues borrar:
-	for(map<string, string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
-		cout << it->first << " => " << it->second << endl;
+// Dada la matriz pasada por parametro, se divide a la misma devolviendo un vector de dichas divisiones
+void SetEntrenamiento::getMatrices(vector < vector <string>* >* matrizGigante,vector< vector < vector <string> * > * > *  vectorDeMatrices){
+
+	for (unsigned int i = 0; i < CANTIDAD_DE_MATRICES; i++){
+		vector < vector <string>* >* matriz = new vector < vector <string>* >;
+		
+		for (unsigned int j = 0; j < (MAX_REVIEWS_MATRIZ / CANTIDAD_DE_MATRICES); j++){
+			//srand(rd());
+			int indiceFila = rand()%(matrizGigante->size());
+			vector <string>* fila = matrizGigante->at(indiceFila);
+			matriz->push_back(fila);
+		}
+		vectorDeMatrices->push_back(matriz);
+		
 	}
-	//
+
 }

@@ -10,8 +10,6 @@ using namespace std;
 
 ProcesadorSetEntrenamiento::ProcesadorSetEntrenamiento(){ this->archivoSet = "labeledTrainData.tsv"; }
 
-ProcesadorSetEntrenamiento::ProcesadorSetEntrenamiento(string fileName) { this->archivoSet = fileName; }
-
 void ProcesadorSetEntrenamiento::mensaje_inicial(){ 
 	cout << "---------------------------------------------------------------\n";
 	cout << "Procesando set de entrenamiento...\n"; 

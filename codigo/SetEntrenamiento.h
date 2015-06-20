@@ -12,7 +12,7 @@ class SetEntrenamiento: public SetReviews {
 
 		void agregarReview(std::string id_review, std::string sentimiento_review,std::vector<std::string> contenido_review);
 		std::string getSentimiento(std::string id_review);
-		void get_N_caracteristicas(int n, std::vector<std::vector<std::string> *>* vectorCaracteristicas,
+		void get_N_caracteristicas(int nro_palabras, std::vector<std::string>* vectorCaracteristicas,
 												std::vector< std::vector< std::vector<std::string> *>* > *matrices);													
 		bool vacio();
 		void vaciar();
@@ -21,11 +21,13 @@ class SetEntrenamiento: public SetReviews {
 
 		std::map<std::string,std::string> sentimientos;
 		std::map<std::string,	std::set<std::string> > id_contenido;
-		void cargar_matriz_y_vector(int i, std::vector< std::vector< std::vector<std::string> *> *> * matrices,
-													std::vector<std::vector<std::string>*> * vectorCaracteristicas,
+		void cargar_matriz_y_vector(std::vector < std::vector <std::string>* >* matrizGigante,
+													std::vector<std::string> * vectorCaracteristicas,
 													std::vector<std::string> *ids,
 													std::map<std::string,std::string> *palabras,
-													std::vector<std::string> *grupo_palabras);
+													std::map<std::string, std::string> word_score);						
+		//std::vector< std::vector < std::vector <std::string>* >* >* getMatrices (std::vector < std::vector <std::string>* >* matriz);
+		void getMatrices (std::vector < std::vector <std::string>* >* matriz,std::vector< std::vector < std::vector <std::string> * > * > *  vectorDeMatrices);
 };
 #endif
 

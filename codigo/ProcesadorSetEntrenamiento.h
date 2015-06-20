@@ -9,7 +9,6 @@
 class ProcesadorSetEntrenamiento : public ProcesadorSet {
     public:
 		ProcesadorSetEntrenamiento();
-		ProcesadorSetEntrenamiento(std::string fileName);
     private:
 		void mensaje_inicial();
 		void mensaje_final();
