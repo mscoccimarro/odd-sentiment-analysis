@@ -6,7 +6,8 @@
 using namespace std;
 
 int main (int argc, char* argv[]){
-	string trainingFile, testFile;
+	const char* trainingFile = NULL;
+	const char*	testFile = NULL;
 	
 	if(argc > 1) {
 		trainingFile = argv[1];
@@ -21,9 +22,10 @@ int main (int argc, char* argv[]){
 	SetEntrenamiento* set = new SetEntrenamiento();
 	ProcesadorSetEntrenamiento* procesadorSetEntrenamiento = new ProcesadorSetEntrenamiento(trainingFile);
 	procesadorSetEntrenamiento->procesarSet(set);
-
-	vector<string>* vectorCaracteristicas = new vector<string>*;
+	vector<string>* vectorCaracteristicas = new vector<string>;
 	vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
+
+	set->get_N_caracteristicas(20, vectorCaracteristicas, vectorDeMatrices);
 
 	RandomForest* randomForest = new RandomForest();
 

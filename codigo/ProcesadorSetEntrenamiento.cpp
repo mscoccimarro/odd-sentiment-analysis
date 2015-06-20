@@ -10,7 +10,7 @@ using namespace std;
 
 ProcesadorSetEntrenamiento::ProcesadorSetEntrenamiento(){ this->archivoSet = "labeledTrainData.tsv"; }
 
-ProcesadorSetEntrenamiento::ProcesadorSetEntrenamiento(string fileName){ this->archivoSet = fileName; }
+ProcesadorSetEntrenamiento::ProcesadorSetEntrenamiento(const char* fileName){ this->archivoSet = fileName; }
 
 void ProcesadorSetEntrenamiento::mensaje_inicial(){ 
 	cout << "---------------------------------------------------------------\n";
