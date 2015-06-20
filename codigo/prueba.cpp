@@ -25,7 +25,7 @@ int main (int argc, char* argv[]){
 	vector<string>* vectorCaracteristicas = new vector<string>;
 	vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
 
-	set->get_N_caracteristicas(10, vectorCaracteristicas, vectorDeMatrices);
+	set->get_N_caracteristicas(5, vectorCaracteristicas, vectorDeMatrices);
 
 	RandomForest* randomForest = new RandomForest(vectorCaracteristicas, valorPositivo);
 

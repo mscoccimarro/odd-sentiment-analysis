@@ -8,11 +8,12 @@
 using namespace std;
 
 string getScale(double score) {
-	if(score < 0.2) return "muy malo";	
-	if(score >= 0.2 && score < 0.4) return "malo";	
-	if(score >= 0.4 && score < 0.6) return "regular";
-	if(score >= 0.6 && score < 0.8) return "bueno";
-	if(score >= 0.8) return "muy bueno";
+	if(score < 0.15) return "muy malo";
+	if(score >= 0.15 && score < 0.3) return "malo";	
+	if(score >= 0.3 && score < 0.5) return "regular";	
+	if(score >= 0.5 && score < 0.7) return "bueno";
+	if(score >= 0.7 && score < 0.9) return "muy bueno";
+	if(score >= 0.9) return "excelente";
 	return "score out of bounds";
 }
 
@@ -21,7 +22,7 @@ bool pairCompare(const pair<string, int>& firstElem, const pair<string, int>& se
 }
 
 // returns word => score relation from processed training file
-map<string, string> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamiento) {
+map<string, double> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamiento) {
 	vector<string> ids,contenido;
 	string sentimiento;
 	vector<string>::iterator i,j;
@@ -61,7 +62,7 @@ map<string, string> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamie
 		// Process words to get scale and top appearances
 		double promedio;
 		vector< pair<string, int> > word_total;
-		map<string, string> word_score, result;
+		map<string, double> word_score, result;
 		cout << endl << "Obteniendo score de " << topQuantity  << " palabras..." << endl;
 
 		for(map<string, int>::iterator it = positivos.begin(); it != positivos.end(); it++) {
@@ -76,7 +77,7 @@ map<string, string> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamie
 			// fill word total
 			word_total.push_back(make_pair(word, total_appearances));
 			// fill word score
-			word_score[word] = getScale(promedio);
+			word_score[word] = promedio;
 		}
 
 		// sort word total in descending order
@@ -86,6 +87,7 @@ map<string, string> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamie
 				it != word_total.begin() + topQuantity;
 			 	it++) {
 			result[it->first] = word_score[it->first];
+			cout << "Promedio: " << word_score[it->first] << endl;
 		}
 
 		return result;

@@ -48,11 +48,11 @@ string SetEntrenamiento::getSentimiento(string id_review){
 void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matrizGigante,
 																		vector<string>* vectorCaracteristicas,
 																		vector<string> *ids,
-																		map<string, string> *palabras,map<string,string> word_score){
+																		map<string, double> *palabras,map<string,string> word_score){
 	ofstream out("prueba_matriz.txt"); 
 	
 	vectorCaracteristicas->push_back(TITULO_ID);
-	for (map<string,string>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
+	for (map<string,double>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
 		if (palabra->first != "") vectorCaracteristicas->push_back((*palabra).first);
 	}
 	vectorCaracteristicas->push_back(TITULO_SENTIMIENTO);
@@ -60,7 +60,7 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 	for (vector<string>::iterator id = ids->begin(); id != ids->end() ; id++){
 		vector<string>* fila = new vector<string>;
 		fila->push_back(*id);
-		for (map<string,string>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
+		for (map<string, double>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
 		// Busco en el map el score de la palabra y lo agrego a la fila de la matriz
 			string id_palabra = *id + "_" + palabra->first;
 			if (palabra->first != "") fila->push_back(word_score[id_palabra]);
@@ -99,7 +99,7 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 
 	
 	// Obtengo score del top N de palabras
-	map<string,string> palabras = getWordScore(nro_palabras,this);
+	map<string, double> palabras = getWordScore(nro_palabras,this);
 	cout << "Score obtenido.\n";
 
 	cout << "\nProcesando palabras...\n";
@@ -107,7 +107,7 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	int procesadas = 0, procesadas_anterior = 0, max_procesadas = nro_palabras/10;
 
 	vector<string> copia_ids = this->listaIds; // En copia_ids tengo los IDs de todos los reviews 
-	for (map<string,string>::iterator palabra = palabras.begin(); palabra != palabras.end(); palabra++){
+	for (map<string, double>::iterator palabra = palabras.begin(); palabra != palabras.end(); palabra++){
 		if ((*palabra).first != ""){
 			// Por cada palabra busco los ids de reviews que la contienen y descarto los que no, de esta forma al final voy a tener los ids de los reviews que tienen todas las palabras
 			vector<string>::iterator id = copia_ids.begin();
@@ -125,7 +125,6 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	}
 
 	// Obtengo cantidad de palabras en review para calcular score
-
 	map<string, int> apariciones;
 	map<string, string> word_score;
 
@@ -133,7 +132,7 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 		vector<string> review = this->reviews[*id];	
 	  int reviewSize = review.size();
 		for(int i = 0; i < reviewSize; i++) {
-			for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
+			for(map<string, double>::iterator it = palabras.begin(); it != palabras.end(); it++) {
 				if(it->first == review[i]) {
 					if(apariciones[it->first])
 						apariciones[it->first]++;
@@ -146,9 +145,12 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 		for(map<string, int>::iterator it = apariciones.begin(); it != apariciones.end(); it++) 
 			cant_apariciones += it->second;
 
-	for(map<string,string>::iterator it = palabras.begin(); it != palabras.end(); it++) {
+	for(map<string, int>::iterator it = apariciones.begin(); it != apariciones.end(); it++) {
 		if(apariciones[it->first]) {
-			double promedio = static_cast<double>(apariciones[it->first]) / static_cast<double>(cant_apariciones);
+			double weight = static_cast<double>(1) + palabras[it->first];  
+			double promedio = 0;
+			if(cant_apariciones != 0) 
+				promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
 			string id_word = *id + "_" + it->first;
 				word_score[id_word] = getScale(promedio);
 			}

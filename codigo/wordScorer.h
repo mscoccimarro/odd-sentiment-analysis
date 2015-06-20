@@ -4,6 +4,6 @@
 #include <map>
 #include <string>
 
-std::map<std::string, std::string> getWordScore(int topQuantity, SetEntrenamiento *setEntrenamiento);
+std::map<std::string, double> getWordScore(int topQuantity, SetEntrenamiento *setEntrenamiento);
 std::string getScale(double score);
 #endif

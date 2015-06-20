@@ -24,7 +24,7 @@ class SetEntrenamiento: public SetReviews {
 		void cargar_matriz_y_vector(std::vector < std::vector <std::string>* >* matrizGigante,
 													std::vector<std::string> * vectorCaracteristicas,
 													std::vector<std::string> *ids,
-													std::map<std::string,std::string> *palabras,
+													std::map<std::string,double> *palabras,
 													std::map<std::string, std::string> word_score);						
 		//std::vector< std::vector < std::vector <std::string>* >* >* getMatrices (std::vector < std::vector <std::string>* >* matriz);
 		void getMatrices (std::vector < std::vector <std::string>* >* matriz,std::vector< std::vector < std::vector <std::string> * > * > *  vectorDeMatrices);
