@@ -149,7 +149,7 @@ map<string, double> getWordScore(int topQuantity,SetEntrenamiento *setEntrenamie
 		for(vector< pair<string, int> >::iterator it = word_total.begin(); 
 				it != word_total.begin() + topQuantity;
 			 	it++) {
-			result[it->first] = idf[it->first];
+			result[it->first] = word_score[it->first];
 			cout << "Promedio: " << word_score[it->first] << endl;
 		}
 
