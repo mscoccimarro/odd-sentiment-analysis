@@ -33,8 +33,6 @@ void getAciertos(const char* trainingFile, const char* testFile){
 			string id_review = lineaLabeled.substr(0, lineaLabeled.find(delimitador));
 			lineaLabeled.erase(0, id_review.length() + delimitador.length());
 
-			id_review.erase(0,1);
-			id_review.erase(id_review.length()-1,1);
 			lineaLabeled.erase(1,lineaLabeled.size()-1);
 			string sentimiento = lineaLabeled;
 
@@ -45,14 +43,12 @@ void getAciertos(const char* trainingFile, const char* testFile){
 			id_review_clasificada = id_review_clasificada.substr(0, id_review_clasificada.size()-1);
 			string clasificacion = lineaClasificada.substr(lineaClasificada.find("Clasificacion:")+14,lineaClasificada.size());
 			
-			if (id_review == id_review_clasificada){
-	/*			cout << "reviews iguales " << id_review << endl;
-				cout << "sentimiento " << sentimiento << endl;
-				cout << "clasifacion " << clasificacion << endl;*/
-				if (sentimiento == clasificacion)
+			if (id_review.compare(id_review_clasificada) == 0){
+				if (sentimiento.compare(clasificacion) == 0)
 					cantidadPositivos++;
 			}else{
-				cout << "No conincidieron las reviews en la review numero: " << id_review << " linea: " << i << endl;
+				cout << "No conincidieron las reviews en la review numero: " << id_review << "- vs -"<< id_review_clasificada
+						<< " linea: " << i << endl;
 			}
 			i++;
 		}
