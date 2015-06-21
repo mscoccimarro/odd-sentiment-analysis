@@ -49,7 +49,6 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 																		vector<string>* vectorCaracteristicas,
 																		vector<string> *ids,
 																		map<string, double> *palabras,map<string,string> word_score){
-	ofstream out("prueba_matriz.txt"); 
 	
 	vectorCaracteristicas->push_back(TITULO_ID);
 	for (map<string,double>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
@@ -68,27 +67,14 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 		fila->push_back(this->sentimientos[*id]);
 		matrizGigante->push_back(fila);
 	}
-
-	out << "Vector caracteristicas: \n";
-	for (vector<string>::iterator j = vectorCaracteristicas->begin() ; j != vectorCaracteristicas->end() ; j++) 
-		out << *j << "\t\t\t";
-	out << endl;
-	out << "Matriz gigante: \n";
-	int j = 0;
-	while(j < matrizGigante->size()){
-		int k = 0;
-		while (k < matrizGigante->at(j)->size()){
-			out << matrizGigante->at(j)->at(k) << "\t\t\t\t";
-			k++;
-		}
-		out<< endl;
-		j++;
-	}
-	out << endl;
-	out.close();
 }
-std::map<std::string, double> SetEntrenamiento::getTopN(){
-	return this->topNPalabras;
+
+map<string, double> SetEntrenamiento::getTopN(){
+
+	if (!this->topNPalabras.empty()) return this->topNPalabras;
+	map<string,double> mapa_vacio;
+	return mapa_vacio;
+	
 }
 
 void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * vectorCaracteristicas,

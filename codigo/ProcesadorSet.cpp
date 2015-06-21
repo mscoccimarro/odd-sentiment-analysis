@@ -17,7 +17,7 @@ ProcesadorSet::ProcesadorSet(){ this->archivoSet = "testData.tsv"; }
 ProcesadorSet::ProcesadorSet(const char* fileName){ this->archivoSet = fileName; }
 
 void ProcesadorSet::mensaje_inicial(){ 
-	cout << "---------------------------------------------------------------\n";
+	cout << "\n---------------------------------------------------------------\n";
 	cout << "Procesando set de test...\n"; 
 	cout << "---------------------------------------------------------------\n";
 }

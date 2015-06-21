@@ -20,40 +20,51 @@ int main (int argc, char* argv[]){
 
 	string valorPositivo = "1";
 
-	SetEntrenamiento* set = new SetEntrenamiento();
+	SetEntrenamiento* setEntrenamiento = new SetEntrenamiento();
 	ProcesadorSetEntrenamiento* procesadorSetEntrenamiento = new ProcesadorSetEntrenamiento(trainingFile);
-	procesadorSetEntrenamiento->procesarSet(set);
-	vector<string>* vectorCaracteristicas = new vector<string>;
-	vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
+	procesadorSetEntrenamiento->procesarSet(setEntrenamiento);
+	delete procesadorSetEntrenamiento;
 
-	set->get_N_caracteristicas(5, vectorCaracteristicas, vectorDeMatrices);
+	if (!setEntrenamiento->vacio()){
+		vector<string>* vectorCaracteristicas = new vector<string>;
+		vector<vector<vector<string>* >* >* vectorDeMatrices = new vector<vector<vector<string>* >* >;
 
-	RandomForest* randomForest = new RandomForest(vectorCaracteristicas, valorPositivo);
+		setEntrenamiento->get_N_caracteristicas(14, vectorCaracteristicas, vectorDeMatrices);
 
-	for (unsigned int i = 0; vectorDeMatrices != NULL && i < vectorDeMatrices->size(); i++){
-		vector<vector<string>* >* matriz = vectorDeMatrices->at(i);
-		if(matriz != NULL) {
-			randomForest->insertarSetDeDatos(matriz);
-			cout << "Arbol " << i << endl;
-			cout << "/---------------------------------------/" << endl << endl;
-			randomForest->armarArbolDeDecision();
-		}	
-	}
-	
-	map<string,double> top_n_palabras = set->getTopN();
-	SetReviews *setTest = new SetReviews();
-	ProcesadorSet* procesadorSetReviews = new ProcesadorSet(testFile);
-	procesadorSetReviews->procesarSet(setTest);
-	vector<string> ids = setTest->getIds();
-	ofstream out("clasificaciones.txt");	
-	for (vector<string>::iterator id = ids.begin(); id != ids.begin()+2; id++){
-		map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
-		for (map<string,string>::iterator it = consulta->begin(); it != consulta->end(); it++){
-			cout << "Palabra: " << it->first << " Valor: " << it->second << endl;
+		RandomForest* randomForest = new RandomForest(vectorCaracteristicas, valorPositivo);
+
+		for (unsigned int i = 0; vectorDeMatrices != NULL && i < vectorDeMatrices->size(); i++){
+			vector<vector<string>* >* matriz = vectorDeMatrices->at(i);
+			if(matriz != NULL) {
+				randomForest->insertarSetDeDatos(matriz);
+				cout << "Arbol " << i << endl;
+				cout << "/---------------------------------------/" << endl << endl;
+				randomForest->armarArbolDeDecision();
+			}	
 		}
-		bool clasificacion_review = randomForest->tomarDecision(consulta);
-		out << "ID: " << *id << " Clasificacion:" << clasificacion_review << endl;
-	}
-	out.close();
+	
+		map<string,double> top_n_palabras = setEntrenamiento->getTopN();
 
+		SetReviews *setTest = new SetReviews();
+		ProcesadorSet* procesadorSetReviews = new ProcesadorSet(testFile);
+		procesadorSetReviews->procesarSet(setTest);
+		delete procesadorSetReviews;
+
+		if (!setTest->vacio()){
+			vector<string> ids = setTest->getIds();
+			ofstream out("clasificaciones.txt");	
+			for (vector<string>::iterator id = ids.begin(); id != ids.end(); id++){
+				cout << "Generando consultas del set de test..." << endl;
+				map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
+				bool clasificacion_review = randomForest->tomarDecision(consulta);
+				out << "ID: " << *id << " Clasificacion:" << clasificacion_review << endl;
+			}
+			out.close();
+		}
+		else cout << "Ocurrio un problema al intentar procesar el set de test." << endl;
+		delete setTest;
+	}
+	else cout << "Ocurrio un problema al intentar procesar el set de entrenamiento." << endl;	
+	delete setEntrenamiento;
+	return 0;
 }
