@@ -115,6 +115,7 @@ int main (int argc, char* argv[]){
 		delete procesadorSetReviews;
 
 		if (!setTest->vacio()){
+			/* csv para kaggle /*
 			vector<string> ids = setTest->getIds();
 			ofstream out("clasificaciones.csv");
 			out<<"\"id\",\"sentiment\"" << endl;
@@ -125,6 +126,17 @@ int main (int argc, char* argv[]){
 				out << *id << "," << clasificacion_review << endl;
 			}
 			out.close();
+			*/
+			/* txt para pruebas*/
+			vector<string> ids = setTest->getIds();
+			ofstream out("clasificaciones.txt");
+			for (vector<string>::iterator id = ids.begin(); id != ids.end(); id++){
+				map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
+				bool clasificacion_review = randomForest->tomarDecision(consulta);
+				out << "ID: " << *id << " Clasificacion:" << clasificacion_review << endl;
+			}
+			out.close();			
+			/* **** */
 		}
 		else cout << "Ocurrio un problema al intentar procesar el set de test." << endl;
 		delete setTest;
