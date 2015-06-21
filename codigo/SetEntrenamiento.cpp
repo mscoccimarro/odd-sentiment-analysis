@@ -161,7 +161,7 @@ void SetEntrenamiento::getMatrices(vector < vector <string>* >* matrizGigante,ve
 	for (unsigned int i = 0; i < CANTIDAD_DE_MATRICES; i++){
 		vector < vector <string>* >* matriz = new vector < vector <string>* >;
 		
-		for (unsigned int j = 0; j < 20; j++){
+		for (unsigned int j = 0; j < 10; j++){
 			//srand(rd());
 			int indiceFila = rand()%(matrizGigante->size());
 			vector <string>* fila = matrizGigante->at(indiceFila);

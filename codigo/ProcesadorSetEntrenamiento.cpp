@@ -32,9 +32,6 @@ void ProcesadorSetEntrenamiento::obtenerReview(SetReviews *setR,string linea){
 
 	id_review = linea.substr(inicio_linea, linea.find(delimitador));
 	linea.erase(inicio_linea, id_review.length() + delimitador.length());
-	// Borro comillas del ID
-	id_review.erase(0,1);
-	id_review.erase(id_review.length()-1,1);
 		
 	sentimiento_review = linea.substr(inicio_linea,linea.find(delimitador));
 	linea.erase(inicio_linea, sentimiento_review.length() + delimitador.length());

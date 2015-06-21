@@ -36,10 +36,7 @@ void ProcesadorSet::obtenerReview(SetReviews *setR,std::string linea){
 	
 	string id_review = linea.substr(0, linea.find(delimitador));
 	linea.erase(0, id_review.length() + delimitador.length());
-	// Borro comillas del ID
-	id_review.erase(0,1);
-	id_review.erase(id_review.length()-1,1);
-		
+
 	vector<string> contenido_review = pReviews->obtenerPalabras(linea,&resultado);
 
 	if (resultado==OK) setR->agregarReview(id_review,contenido_review);

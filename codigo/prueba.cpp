@@ -52,12 +52,13 @@ int main (int argc, char* argv[]){
 
 		if (!setTest->vacio()){
 			vector<string> ids = setTest->getIds();
-			ofstream out("clasificaciones.txt");	
+			ofstream out("clasificaciones.csv");	
+			out<<"\"id\",\"sentiment\"" << endl;
+			cout << "Generando consultas del set de test..." << endl;
 			for (vector<string>::iterator id = ids.begin(); id != ids.end(); id++){
-				cout << "Generando consultas del set de test..." << endl;
 				map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
 				bool clasificacion_review = randomForest->tomarDecision(consulta);
-				out << "ID: " << *id << " Clasificacion:" << clasificacion_review << endl;
+				out << *id << "," << clasificacion_review << endl;
 			}
 			out.close();
 		}
