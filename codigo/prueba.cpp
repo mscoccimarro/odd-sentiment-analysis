@@ -150,10 +150,3 @@ int main (int argc, char* argv[]){
 	return 0;
 
 }
-
-/*
-Crear una carpeta que se llame como el grupo (Ejemplo Grupo14) y dentro de esta carpeta incluir las siguientes sub-carpetas y archivos.
-src: Fuentes del TP
-kaggle: submission a kaggle (generada en la prueba del TP)
-grupo##_probs.csv (archivo con una UNICA columna con las probabilidades de los reviews en el mismo orden que figuran los IDs en el samplesubmission de kaggle). 
-*/
