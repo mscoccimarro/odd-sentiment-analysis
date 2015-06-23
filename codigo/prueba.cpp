@@ -78,8 +78,12 @@ int main (int argc, char* argv[]){
 		testFile = argv[2];
 	}
 
-	string valorPositivo = "1";
+	cout << "---------------------------------------------------------------\n";
+	cout << "TP Datos\n";
+	cout << "---------------------------------------------------------------\n";		
 
+	string valorPositivo = "1";
+	
 	SetEntrenamiento* setEntrenamiento = new SetEntrenamiento();
 	ProcesadorSetEntrenamiento* procesadorSetEntrenamiento = new ProcesadorSetEntrenamiento(trainingFile);
 	procesadorSetEntrenamiento->procesarSet(setEntrenamiento);
@@ -111,20 +115,22 @@ int main (int argc, char* argv[]){
 		delete procesadorSetReviews;
 
 		if (!setTest->vacio()){
-			/* csv para kaggle /*
+			/* csv para kaggle */
 			vector<string> ids = setTest->getIds();
-			ofstream out("clasificaciones.csv");
-			out<<"\"id\",\"sentiment\"" << endl;
+			ofstream csv("submission.csv");
+			ofstream probabilidades("grupo3_probs.csv");
+			csv<<"\"id\",\"sentiment\"" << endl;
 			cout << "Generando consultas del set de test..." << endl;
 			for (vector<string>::iterator id = ids.begin(); id != ids.end(); id++){
 				map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
 				bool clasificacion_review = randomForest->tomarDecision(consulta);
-				out << *id << "," << clasificacion_review << endl;
+				csv << *id << "," << clasificacion_review << endl;
+				probabilidades << clasificacion_review << endl;
 			}
-			out.close();
-			*/
+			csv.close();
+			probabilidades.close();
+			
 			/* txt para pruebas*/
-			vector<string> ids = setTest->getIds();
 			ofstream out("clasificaciones.txt");
 			for (vector<string>::iterator id = ids.begin(); id != ids.end(); id++){
 				map<string,string> * consulta = setTest->generarConsultas(*id,top_n_palabras);
@@ -145,4 +151,9 @@ int main (int argc, char* argv[]){
 
 }
 
-
+/*
+Crear una carpeta que se llame como el grupo (Ejemplo Grupo14) y dentro de esta carpeta incluir las siguientes sub-carpetas y archivos.
+src: Fuentes del TP
+kaggle: submission a kaggle (generada en la prueba del TP)
+grupo##_probs.csv (archivo con una UNICA columna con las probabilidades de los reviews en el mismo orden que figuran los IDs en el samplesubmission de kaggle). 
+*/

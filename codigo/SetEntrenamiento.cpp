@@ -1,16 +1,14 @@
 #include "SetEntrenamiento.h"
 #include "wordScorer.h"
 #include <iostream> 
-#include <fstream> 
 #include <iomanip>
 #include <time.h>
 #include <cstdlib>
 #include <math.h>
-#define MAX_REVIEWS_MATRIZ 40
 #define SEC_PER_MIN 60
 #define TITULO_ID "id"
 #define TITULO_SENTIMIENTO "sentimiento"
-#define CANTIDAD_DE_MATRICES 10
+#define CANTIDAD_DE_MATRICES 20
 
 using namespace std;
 
@@ -148,9 +146,11 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	// reset apariciones
 	apariciones.clear();
 	}
+
 	vector < vector <string>* >* matrizGigante = new vector < vector<string>* >;
 	cargar_matriz_y_vector(matrizGigante,vectorCaracteristicas,&copia_ids,&palabras,word_score);
 	getMatrices(matrizGigante,matrices);
+
 	t = clock() - t;
 	cout << "Proceso concluido: " << fixed << setprecision(2) << ((float)t/CLOCKS_PER_SEC)/SEC_PER_MIN << " minutos transcurridos.\n\n";
 }
@@ -161,7 +161,7 @@ void SetEntrenamiento::getMatrices(vector < vector <string>* >* matrizGigante,ve
 	for (unsigned int i = 0; i < CANTIDAD_DE_MATRICES; i++){
 		vector < vector <string>* >* matriz = new vector < vector <string>* >;
 		
-		for (unsigned int j = 0; j < 10; j++){
+		for (unsigned int j = 0; j < 5; j++){
 			//srand(rd());
 			int indiceFila = rand()%(matrizGigante->size());
 			vector <string>* fila = matrizGigante->at(indiceFila);
