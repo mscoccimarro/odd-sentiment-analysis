@@ -145,7 +145,6 @@ int main (int argc, char* argv[]){
 	}
 	else cout << "Ocurrio un problema al intentar procesar el set de entrenamiento." << endl;
 	delete setEntrenamiento;
-
 	getAciertos (trainingFile, "clasificaciones.txt");
 	return 0;
 

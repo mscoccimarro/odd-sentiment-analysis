@@ -5,6 +5,7 @@
 #include <time.h>
 #include <cstdlib>
 #include <math.h>
+#include <fstream>
 #define SEC_PER_MIN 60
 #define TITULO_ID "id"
 #define TITULO_SENTIMIENTO "sentimiento"
@@ -65,6 +66,24 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 		fila->push_back(this->sentimientos[*id]);
 		matrizGigante->push_back(fila);
 	}
+	ofstream out("matriz_gigante.txt");
+	out << "Vector caracteristicas: \n";
+	for (vector<string>::iterator j = vectorCaracteristicas->begin() ; j != vectorCaracteristicas->end() ; j++) 
+		out << *j << "\t\t\t";
+	out << endl;
+	out << "Matriz gigante: \n";
+	int j = 0;
+	while(j < matrizGigante->size()){
+		int k = 0;
+		while (k < matrizGigante->at(j)->size()){
+			out << matrizGigante->at(j)->at(k) << "\t\t\t\t";
+			k++;
+		}
+		out<< endl;
+		j++;
+	}
+	out << endl;
+	out.close();
 }
 
 map<string, double> SetEntrenamiento::getTopN(){
@@ -78,6 +97,9 @@ map<string, double> SetEntrenamiento::getTopN(){
 void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * vectorCaracteristicas,
 																	vector< vector< vector<string> *> *> *matrices){ 
 
+	// Para prueba
+	ofstream promedios("promedios.txt");
+	//
 	clock_t t = clock();
 	
 	cout << "---------------------------------------------------------------\n";
@@ -139,7 +161,10 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 			double promedio = 0;
 			if(cant_apariciones != 0) 
 				promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
-			string id_word = *id + "_" + it->first;
+				string id_word = *id + "_" + it->first;
+				if (promedio > 0.2) promedio = (double)(rand()%(100))/100 ;
+				else promedio = (double)(rand()%(50))/100;
+				promedios << "Palabra: " << it->first << "Promedio: " << promedio << endl;
 				word_score[id_word] = getScale(promedio);
 			}
 		}
