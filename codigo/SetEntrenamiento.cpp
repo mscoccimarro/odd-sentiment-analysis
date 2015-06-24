@@ -141,6 +141,8 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	for(vector<string>::iterator id = copia_ids.begin(); id != copia_ids.end(); id++) {
 		vector<string> review = this->reviews[*id];	
 	  int reviewSize = review.size();
+		string sentiment = this->getSentimiento(*id);
+
 		for(int i = 0; i < reviewSize; i++) {
 			for(map<string, double>::iterator it = palabras.begin(); it != palabras.end(); it++) {
 				if(it->first == review[i]) {
@@ -159,15 +161,20 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 		if(apariciones[it->first]) {
 			double weight = static_cast<double>(1) + palabras[it->first];  
 			double promedio = 0;
-			if(cant_apariciones != 0) 
-				promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
-				string id_word = *id + "_" + it->first;
-				if (promedio > 0.2) promedio = (double)(rand()%(100))/100 ;
-				else promedio = (double)(rand()%(50))/100;
-				promedios << "Palabra: " << it->first << "Promedio: " << promedio << endl;
-				word_score[id_word] = getScale(promedio);
+			if(cant_apariciones != 0) {
+					promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
+				if(sentiment == "0") 
+					promedio = 1 - promedio;
+					//weight = 1 - (weight - 1);		
+					//cout << "Weight: " << weight << endl;
 			}
+				//string id_word = *id + "_" + it->first;
+				//if (promedio > 0.2) promedio = (double)(rand()%(100))/100 ;
+				//else promedio = (double)(rand()%(50))/100;
+				//promedios << "Palabra: " << it->first << "Promedio: " << promedio << endl;
+			word_score[*id + "_" + it->first] = getScale(promedio);
 		}
+	}
 	// reset apariciones
 	apariciones.clear();
 	}
