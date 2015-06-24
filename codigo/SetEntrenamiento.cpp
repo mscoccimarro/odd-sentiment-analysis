@@ -1,6 +1,7 @@
 #include "SetEntrenamiento.h"
 #include "wordScorer.h"
 #include <iostream> 
+#include <fstream> 
 #include <iomanip>
 #include <time.h>
 #include <cstdlib>
@@ -8,7 +9,7 @@
 #define SEC_PER_MIN 60
 #define TITULO_ID "id"
 #define TITULO_SENTIMIENTO "sentimiento"
-#define CANTIDAD_DE_MATRICES 20
+#define CANTIDAD_DE_MATRICES 10
 
 using namespace std;
 
@@ -47,7 +48,9 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 																		vector<string>* vectorCaracteristicas,
 																		vector<string> *ids,
 																		map<string, double> *palabras,map<string,string> word_score){
-	
+
+	ofstream scores("scores.txt");
+	scores << "PALABRA\t\t\t\tSCORE\n"; 	
 	vectorCaracteristicas->push_back(TITULO_ID);
 	for (map<string,double>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
 		if (palabra->first != "") vectorCaracteristicas->push_back((*palabra).first);
@@ -60,11 +63,36 @@ void SetEntrenamiento::cargar_matriz_y_vector(vector < vector <string>* >* matri
 		for (map<string, double>::iterator palabra = palabras->begin(); palabra != palabras->end(); palabra++){
 		// Busco en el map el score de la palabra y lo agrego a la fila de la matriz
 			string id_palabra = *id + "_" + palabra->first;
-			if (palabra->first != "") fila->push_back(word_score[id_palabra]);
+			if (palabra->first != "") {
+				fila->push_back(word_score[id_palabra]);
+				scores << palabra->first <<"\t\t\t\t" << word_score[id_palabra] << endl;
+			}
 		}
 		fila->push_back(this->sentimientos[*id]);
 		matrizGigante->push_back(fila);
 	}
+
+	/* Print vector caracteristicas para la prueba */
+	ofstream out("matriz_gigante.txt");
+	out << "Vector caracteristicas: \n";
+	for (vector<string>::iterator j = vectorCaracteristicas->begin() ; j != vectorCaracteristicas->end() ; j++) 
+		out << *j << "\t\t\t";
+	out << endl;
+	out << "Matriz gigante: \n";
+	int j = 0;
+	while(j < matrizGigante->size()){
+		int k = 0;
+		while (k < matrizGigante->at(j)->size()){
+			out << matrizGigante->at(j)->at(k) << "\t\t\t\t";
+			k++;
+		}
+		out<< endl;
+		j++;
+	}
+	out << endl;
+	out.close();
+	/* ------------------------------------------- */
+	
 }
 
 map<string, double> SetEntrenamiento::getTopN(){
@@ -115,7 +143,7 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 	// Obtengo cantidad de palabras en review para calcular score
 	map<string, int> apariciones;
 	map<string, string> word_score;
-
+	ofstream promedios("promedios.txt");
 	for(vector<string>::iterator id = copia_ids.begin(); id != copia_ids.end(); id++) {
 		vector<string> review = this->reviews[*id];	
 	  int reviewSize = review.size();
@@ -132,14 +160,17 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 		int cant_apariciones = 0;
 		for(map<string, int>::iterator it = apariciones.begin(); it != apariciones.end(); it++) 
 			cant_apariciones += it->second;
-
+	
 	for(map<string, int>::iterator it = apariciones.begin(); it != apariciones.end(); it++) {
 		if(apariciones[it->first]) {
 			double weight = static_cast<double>(1) + palabras[it->first];  
 			double promedio = 0;
 			if(cant_apariciones != 0) 
 				promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
-			string id_word = *id + "_" + it->first;
+				string id_word = *id + "_" + it->first;
+				if (promedio >= 0.14) promedio = (double)(rand()%(100))/100 + 0.5;
+				else promedio = (double)(rand()%(50))/100;
+				promedios << "Palabra: " << id_word << "Promedio:" << promedio << endl;
 				word_score[id_word] = getScale(promedio);
 			}
 		}

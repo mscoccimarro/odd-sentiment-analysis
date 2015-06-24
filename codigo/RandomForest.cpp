@@ -316,8 +316,8 @@ bool RandomForest::tomarDecision (map<string,string>* consulta){
 	}
 
 	double cantidadTotal = arbolesPositivos / arbolesTotales;
-	cout << endl << endl << "cantidad positivos: " << arbolesPositivos << endl;
-	cout << "cantidad total: " << arbolesTotales << endl;
+	// << endl << endl << "cantidad positivos: " << arbolesPositivos << endl;
+	//cout << "cantidad total: " << arbolesTotales << endl;
 
 	while (cantidadTotal == 0.5){
 	//	srand((unsigned)time(0));

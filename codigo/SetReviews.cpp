@@ -2,6 +2,7 @@
 #include "wordScorer.h"
 #include <string>
 #include <iostream> 
+#include <fstream> 
 #include <vector>
 #include <iomanip>
 #include <time.h>
@@ -43,12 +44,12 @@ vector<string> SetReviews::getContenido(string id_review){
 map<string,string> * SetReviews::generarConsultas(string id_review,map<string,double> top_n_palabras){
 	map<string,string> *consulta = new map<string,string>;
 	vector<string> palabras_consulta = reviews[id_review];
-
+	cout << "Consulta review " << id_review << endl;
 	for(vector<string>::iterator palabra = palabras_consulta.begin(); palabra != palabras_consulta.end(); palabra++){
 		if(top_n_palabras[*palabra]){
 			(*consulta)[*palabra] = getScale(top_n_palabras[*palabra]);
+			cout << "Palabra: " << *palabra << "Score: " << getScale(top_n_palabras[*palabra]) << endl;
 		}
 	}
-	
 	return consulta;
 }
