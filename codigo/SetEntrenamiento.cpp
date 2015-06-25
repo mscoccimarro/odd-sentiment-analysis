@@ -163,8 +163,8 @@ void SetEntrenamiento::get_N_caracteristicas(int nro_palabras, vector<string> * 
 			double promedio = 0;
 			if(cant_apariciones != 0) {
 					promedio = (static_cast<double>(apariciones[it->first]) * weight)/ static_cast<double>(cant_apariciones);
-				//if(sentiment == "0") 
-				//	promedio = 1 - promedio;
+				if(sentiment == "0") 
+					promedio = 1 - promedio;
 				
 					promedio = 1 - promedio;
 					//weight = 1 - (weight - 1);		
