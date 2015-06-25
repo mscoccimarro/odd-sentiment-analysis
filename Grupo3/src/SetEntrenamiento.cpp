@@ -8,7 +8,7 @@
 #define SEC_PER_MIN 60
 #define TITULO_ID "id"
 #define TITULO_SENTIMIENTO "sentimiento"
-#define CANTIDAD_DE_MATRICES 20
+#define CANTIDAD_DE_MATRICES 10
 #define FILAS_MATRIZ 5
 
 using namespace std;
