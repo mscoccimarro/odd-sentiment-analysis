@@ -12,7 +12,7 @@ EliminadorSufijos::EliminadorSufijos(){
 EliminadorSufijos::~EliminadorSufijos(){
 	delete this->procesador;
 	delete this->util;
-};
+}
 
 string EliminadorSufijos::copiar(string::iterator it,string::iterator finPalabra){
 	string ri;
@@ -35,9 +35,18 @@ string EliminadorSufijos::procesarRegionRi(string palabra){
 /* definirR1()
  * Devuelve la seccion R1 de una palabra.
  * Seccion R1 = todo lo que sigue despues de la primera vocal seguida de una consonante o la region vacia del
- * final de la palabra si no existe esta consonante. 
+ * final de la palabra si no existe esta consonante.
+ * Si la palabra empieza con "gener", "commun" o "arsen"  R1 sera el resto de la palabra.
  */
-string EliminadorSufijos::definirR1(string palabra){return procesarRegionRi(palabra);}
+string EliminadorSufijos::definirR1(string palabra){
+	string gener = "gener", commun = "commun", arsen = "arsen";
+	size_t long_prefijo = 0;	
+	if(this->util->empieza_con(palabra,gener)) long_prefijo = gener.length();
+	if(this->util->empieza_con(palabra,commun)) long_prefijo = commun.length();
+	if(this->util->empieza_con(palabra,arsen)) long_prefijo = arsen.length();
+	if(long_prefijo != 0) return palabra.substr(long_prefijo,palabra.length()-long_prefijo);
+	return procesarRegionRi(palabra);
+}
 
 /* definirR2()
  * Devuelve la seccion R2 de una palabra.
@@ -69,7 +78,7 @@ void EliminadorSufijos::quitarYconsonante(string *palabra){
  * bb, dd, ff, gg, mm, nn, pp, rr, tt
  */
  
-int EliminadorSufijos::esDoble(string palabra){
+bool EliminadorSufijos::esDoble(string palabra){
 	if (palabra == "bb" || palabra == "dd" || palabra == "ff" || 
 	    palabra == "gg" || palabra == "mm" || palabra == "nn" || 
 	    palabra == "pp" || palabra == "rr" || palabra == "tt") return true;
@@ -81,7 +90,7 @@ int EliminadorSufijos::esDoble(string palabra){
  * Una silaba es short si esta conformada por una consonante + una vocal + una consonante distinta de w,x e Y o si
  * la palabra empieza con una vocal seguida por una consonante
  */
-int EliminadorSufijos::silaba_es_short(string palabra){
+bool EliminadorSufijos::silaba_es_short(string palabra){
 	string::iterator it = palabra.end()-1 ; 
 	if (palabra.length() == 2 && !this->util->esConsonante(it-1) && this->util->esConsonante(it)) return true;
 	else if (palabra.length() >= 3 && this->util->esConsonante(it-2) && !this->util->esConsonante(it-1) && 
@@ -93,25 +102,59 @@ int EliminadorSufijos::silaba_es_short(string palabra){
  * Devuelve true si la palabra es short y false en caso contario.
  * Una palabra es short si termina con una silaba short y si su seccion R1 (ver metodo definirR1()) es nula.
 */
-int EliminadorSufijos::esShort(string palabra){
+bool EliminadorSufijos::esShort(string palabra){
 	string r1 = definirR1(palabra);
 	if (silaba_es_short(palabra) && r1 == STRING_VACIO) return true;
 	return false;
 }
-	
+/* Excepciones:
+ * La siguiente lista de palabras son excepciones que se procesan como se indica a continuacion de cada una:
+ *	'skis' -> Steam: 'ski' ; 'skies' -> Steam: 'sky' ; 'dying' -> Steam: 'die' ; 'lying' -> Steam: 'lie' ; 'tying'-> Steam: 'tie'
+ * 'idly' -> Steam: 'idl' ; 'gently' -> Steam: 'gentl' ; 'ugly'-> Steam: 'ugli'; 'early'-> Steam: 'earli' ; 'singly'-> Steam: 'singl' 
+ * Las siguientes palabras se dejan invariantes: 'sky' ; 'news' ; 'howe' ; 'atlas' ; 'cosmos' ; 'bias' ; 'andes'
+ * En caso de haber procesado alguna de las excepciones mencionadas, se devuelve true. Si no, false.
+ */
+bool EliminadorSufijos::excepciones(string *palabra){
+	if (*palabra == "skis") {*palabra = "ski"; return true;}
+	if (*palabra == "skies") {*palabra = "sky"; return true;}
+	if (*palabra == "dying") {*palabra = "die"; return true;}
+	if (*palabra == "lying") {*palabra = "lie"; return true;}
+	if (*palabra == "tying") {*palabra = "tie"; return true;}
+	if (*palabra == "idly") {*palabra = "idl"; return true;}
+	if (*palabra == "gently") {*palabra = "gentl"; return true;}
+	if (*palabra == "ugly") {*palabra = "ugli"; return true;}
+	if (*palabra == "early") {*palabra = "earli"; return true;}
+	if (*palabra == "singly") {*palabra = "singl"; return true;}
+	if (*palabra == "sky" || *palabra == "news" || *palabra == "howe" || *palabra == "atlas"  || *palabra == "cosmos" 
+		|| *palabra == "bias" || *palabra == "andes" ) return true;
+	return false;
+}
+/* Realiza el siguiente post-procesamiento luego del step 1a:
+ * Si la palabra es: 'inning' ; 'outing' ; 'canning' ; 'herring' ; 'earring' ; 'proceed' ; 'exceed' ; 'succeed'   
+ * se debe dejar invariante. Si la palabra era alguna de estas devuelve true, sino false.
+ */
+bool EliminadorSufijos::postStep1a(string palabra){
+	if(palabra == "inning" || palabra == "outing" || palabra == "canning" || palabra == "herring" || palabra == "earring" || palabra == "proceed" 
+	|| palabra == "exceed" || palabra == "succeed") return true;
+	 return false;
+}
+
 /* Step 1a:
 * Reemplazar 'sses' por 'ss' 
 * Reemplazar 'ied' e 'ies' por 'i' si estan precedidos por mas de una letra, sino por 'ie' (por ejemplo 'ties' sera 'tie' y
 * 'cries' sera 'cri')
-* Si no tenia 'sses' al final, eliminar 's' final si la palabra contiene alguna vocal que no este inmediatamente antes de la 's' 
+* Si termina en 'us' o 'ss' no hacer nada.
+* Si no tenia 'sses','us' ni 'ss' al final, eliminar 's' final si la palabra contiene alguna vocal que no este inmediatamente antes de la 's' 
 * (por ejemplo 'gas' conservara su 's' mientras que 'gaps' y 'kiwis' no la conservaran) y no tiene dos 'ss' al final (por ejemplo
 * 'caress' conservara su s)
+* Devuelve true si la palabra debe permanecer invariante una vez terminado el step1a (ver metodo postStep1a()) , false en caso contrario.
 */
-void EliminadorSufijos::step1a(string *palabra){
+bool EliminadorSufijos::step1a(string *palabra){
+	this->procesador->procesar_sses(palabra);
 	this->procesador->procesar_ied_ies(palabra,"ied");
 	this->procesador->procesar_ied_ies(palabra,"ies"); 
-	int sses_procesado = this->procesador->procesar_sses(palabra);	
-	if (!sses_procesado) this->procesador->procesar_s(palabra);
+	if (!this->util->termina_con(*palabra,"us") && !this->util->termina_con(*palabra,"ss")) this->procesador->procesar_s(palabra);
+	return postStep1a(*palabra);
 }
 
 /* Realiza el siguiente post-procesamiento luego del step 1b:
@@ -219,7 +262,7 @@ void EliminadorSufijos::step3(string *palabra){
 	this->procesador->procesar_y_borrar(palabra,r1,"tional","tion");
 	this->procesador->procesar_y_borrar(palabra,r1,"alize","al");
 	this->procesador->procesar_y_borrar(palabra,r1,"icate","ic");
-	this->procesador->procesar_ative(palabra,r1,r2);
+	this->procesador->procesar_ative(palabra,r2);
 	this->procesador->eliminar_sufijo_de_ri(palabra,r1,"ful");
 	this->procesador->eliminar_sufijo_de_ri(palabra,r1,"ness");
 }
@@ -264,24 +307,32 @@ void EliminadorSufijos::step4(string *palabra){
 void EliminadorSufijos::step5(string *palabra){
 	string r1 = definirR1(*palabra),r2 = definirR2(r1),silaba_anterior = palabra->substr(0,palabra->length()-1);
 	string::iterator it = palabra->end()-1, it_r1 = r1.end()-1, it_r2 = r2.end()-1;
-	if (*it == 'e' && (*it_r2 == 'e' || *it_r1  == 'e' && !silaba_es_short(silaba_anterior))) palabra->erase(it);
+	if (*it == 'e' && (*it_r2 == 'e' || (*it_r1  == 'e' && !silaba_es_short(silaba_anterior)))) palabra->erase(it);
 	if (*it == 'l' && *(it-1) == 'l' && *it_r2 == 'l') palabra->erase(it);  
 }
 
-/* Remueve los sufijos de las palabras dejando solo su 'stem' (parte de la palabra que nunca cambia)
+/* Porter-Stemmer
+ * Remueve los sufijos de las palabras dejando solo su 'stem' (parte de la palabra que nunca cambia)
  * Por ejemplo, dada la palabra 'produced' su stem es 'produc', ya que hay palabras como
  * 'production', 'productively', 'producing', etc.
  */
 void EliminadorSufijos::eliminarSufijos(string *palabra){
-	cambiarYconsonante(palabra);
 // Si la palabra tiene longitud menor o igual a 2, no se le aplica ningun cambio. 
-// Esto se chequea en cada paso, ya que al irse procesando la palabra esta se va acortando.
-	if (palabra->length() > 2) step1a(palabra);
-	if (palabra->length() > 2) step1b(palabra);
-	if (palabra->length() > 2) step1c(palabra);		
-	if (palabra->length() > 2) step2(palabra);
-	if (palabra->length() > 2) step3(palabra);
-	if (palabra->length() > 2) step4(palabra);
-	if (palabra->length() > 2) step5(palabra);
-	quitarYconsonante(palabra);
+// Esto se chequea en cada paso ya que al irse procesando la palabra, esta se va acortando.
+	if (palabra->length() > 2){
+		cambiarYconsonante(palabra);
+		bool excepcion_encontrada = excepciones(palabra); // Algunas palabras son excepciones que no pasan por el mismo proceso que las otras
+		if (!excepcion_encontrada){
+			bool finalizar = step1a(palabra); // Hay algunas palabras que luego del step1a quedan invariantes
+			if (!finalizar){
+				if (palabra->length() > 2) step1b(palabra);
+				if (palabra->length() > 2) step1c(palabra);		
+				if (palabra->length() > 2) step2(palabra);
+				if (palabra->length() > 2) step3(palabra);
+				if (palabra->length() > 2) step4(palabra);
+				if (palabra->length() > 2) step5(palabra);
+			}
+		}
+		quitarYconsonante(palabra);
+	}	
 }

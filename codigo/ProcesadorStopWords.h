@@ -1,17 +1,17 @@
 #ifndef PROCESADOR_STOPWORDS_H
 #define PROCESADOR_STOPWORDS_H
-#include <string>
+#include <set>
 #include <vector>
+#include <string>
 
 class ProcesadorStopWords {
     
     public:
 		ProcesadorStopWords();
-		int eliminarStopWords(std::vector <std::string> *palabras_review);
-        
+		int eliminarStopWords(std::vector<std::string> *palabras_review);
+		
     private:
-		std::vector <std::string> listaStopWords;
-		void limpiarStopWords();
+		std::set<std::string> listaStopWords;
 		
 };
 
